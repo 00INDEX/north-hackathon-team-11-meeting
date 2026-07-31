@@ -145,6 +145,7 @@ export function seedBaselineRules(db: Database): void {
       targetId: 'room-activity',
       ruleType: 'periodic_block',
       reason: '工作日午餐时段作为餐厅',
+      isSystem: true,
       recurrence: JSON.stringify({
         type: 'weekly',
         weekdays: [1, 2, 3, 4, 5],
@@ -160,6 +161,7 @@ export function seedBaselineRules(db: Database): void {
       targetId: 'room-502',
       ruleType: 'periodic_block',
       reason: '每周二全天不可用',
+      isSystem: true,
       recurrence: JSON.stringify({
         type: 'weekly',
         weekdays: [2],

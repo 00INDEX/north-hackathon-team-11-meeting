@@ -31,7 +31,7 @@ describe('SQLite migrations and seed data', () => {
   it('migrates an empty database idempotently', () => {
     runMigrations(db);
 
-    expect(getMigrations(db).map((migration) => migration.id)).toEqual([1]);
+    expect(getMigrations(db).map((migration) => migration.id)).toEqual([1, 2]);
     const tableNames = db
       .prepare("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name")
       .all() as Array<{ name: string }>;

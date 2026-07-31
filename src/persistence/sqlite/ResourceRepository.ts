@@ -26,10 +26,12 @@ export class ResourceRepository {
   upsertMany(input: CreateResourceInput[]): Resource[] {
     for (const resource of input) {
       const now = new Date().toISOString();
-      const exists = Boolean(this.db.prepare('SELECT 1 FROM resources WHERE id = ?').get(resource.id));
+      const existing = this.db.prepare('SELECT created_at AS createdAt FROM resources WHERE id = ?').get(resource.id) as
+        | { createdAt: string }
+        | undefined;
       const row = serializeResource({
         ...resource,
-        createdAt: resource.createdAt ?? (exists ? now : undefined),
+        createdAt: resource.createdAt ?? existing?.createdAt,
         updatedAt: resource.updatedAt ?? now,
       });
 

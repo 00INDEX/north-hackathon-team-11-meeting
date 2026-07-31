@@ -35,6 +35,18 @@ export interface CreateRoomInput {
   updatedAt?: string;
 }
 
+export interface UpdateRoomInput {
+  name?: string;
+  type?: RoomType;
+  capacity?: number;
+  location?: string;
+  equipment?: string[];
+  enabled?: boolean;
+  openStart?: string;
+  openEnd?: string;
+  version?: number;
+}
+
 export interface RoomResourceMapping {
   roomId: string;
   resourceId: string;

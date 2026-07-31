@@ -8,6 +8,7 @@ export interface AvailabilityRule {
   ruleType: RuleType;
   reason: string;
   enabled: boolean;
+  isSystem: boolean;
   recurrence?: string;
   start: string;
   end: string;
@@ -23,10 +24,23 @@ export interface CreateAvailabilityRuleInput {
   ruleType: RuleType;
   reason: string;
   enabled?: boolean;
+  isSystem?: boolean;
   recurrence?: string;
   start: string;
   end: string;
   version?: number;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface UpdateAvailabilityRuleInput {
+  targetType?: RuleTargetType;
+  targetId?: string;
+  ruleType?: RuleType;
+  reason?: string;
+  enabled?: boolean;
+  recurrence?: string;
+  start?: string;
+  end?: string;
+  version?: number;
 }

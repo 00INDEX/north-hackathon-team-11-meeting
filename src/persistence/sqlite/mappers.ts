@@ -71,6 +71,7 @@ export interface AvailabilityRuleRow {
   rule_type: string;
   reason: string;
   enabled: number;
+  is_system: number;
   recurrence: string | null;
   start: string;
   end: string;
@@ -139,6 +140,7 @@ export function mapAvailabilityRuleRow(row: AvailabilityRuleRow): AvailabilityRu
     ruleType: row.rule_type as AvailabilityRule['ruleType'],
     reason: row.reason,
     enabled: row.enabled === 1,
+    isSystem: row.is_system === 1,
     recurrence: row.recurrence ?? undefined,
     start: row.start,
     end: row.end,
@@ -231,6 +233,7 @@ export function serializeAvailabilityRule(row: CreateAvailabilityRuleInput) {
     rule_type: row.ruleType,
     reason: row.reason,
     enabled: row.enabled === false ? 0 : 1,
+    is_system: row.isSystem === true ? 1 : 0,
     recurrence: row.recurrence ?? null,
     start: row.start,
     end: row.end,

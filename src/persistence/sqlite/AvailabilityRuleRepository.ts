@@ -22,19 +22,21 @@ export class AvailabilityRuleRepository {
 
   upsert(input: CreateAvailabilityRuleInput): AvailabilityRule {
     const now = new Date().toISOString();
-    const exists = Boolean(this.db.prepare('SELECT 1 FROM availability_rules WHERE id = ?').get(input.id));
+    const existing = this.db.prepare('SELECT created_at AS createdAt FROM availability_rules WHERE id = ?').get(input.id) as
+      | { createdAt: string }
+      | undefined;
     const row = serializeAvailabilityRule({
       ...input,
-      createdAt: input.createdAt ?? (exists ? now : undefined),
+      createdAt: input.createdAt ?? existing?.createdAt,
       updatedAt: input.updatedAt ?? now,
     });
 
     this.db
       .prepare(
         `INSERT INTO availability_rules (
-          id, target_type, target_id, rule_type, reason, enabled, recurrence, start, end, version, created_at, updated_at
+          id, target_type, target_id, rule_type, reason, enabled, is_system, recurrence, start, end, version, created_at, updated_at
         ) VALUES (
-          @id, @target_type, @target_id, @rule_type, @reason, @enabled, @recurrence, @start, @end, @version, @created_at, @updated_at
+          @id, @target_type, @target_id, @rule_type, @reason, @enabled, @is_system, @recurrence, @start, @end, @version, @created_at, @updated_at
         )
         ON CONFLICT(id) DO UPDATE SET
           target_type = excluded.target_type,
@@ -42,6 +44,7 @@ export class AvailabilityRuleRepository {
           rule_type = excluded.rule_type,
           reason = excluded.reason,
           enabled = excluded.enabled,
+          is_system = excluded.is_system,
           recurrence = excluded.recurrence,
           start = excluded.start,
           end = excluded.end,

@@ -53,10 +53,12 @@ export class RoomRepository {
 
   upsert(input: CreateRoomInput): Room {
     const now = new Date().toISOString();
-    const exists = Boolean(this.db.prepare('SELECT 1 FROM rooms WHERE id = ?').get(input.id));
+    const existing = this.db.prepare('SELECT created_at AS createdAt FROM rooms WHERE id = ?').get(input.id) as
+      | { createdAt: string }
+      | undefined;
     const row = serializeRoom({
       ...input,
-      createdAt: input.createdAt ?? (exists ? now : undefined),
+      createdAt: input.createdAt ?? existing?.createdAt,
       updatedAt: input.updatedAt ?? now,
     });
 

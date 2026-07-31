@@ -10,8 +10,22 @@ export class AuditEventRepository {
     return row ? mapAuditEventRow(row) : undefined;
   }
 
-  list(): AuditEvent[] {
-    return (this.db.prepare('SELECT * FROM audit_events ORDER BY created_at, id').all() as AuditEventRow[]).map((row) =>
+  list(filters: { targetType?: string; targetId?: string } = {}): AuditEvent[] {
+    const conditions: string[] = [];
+    const params: string[] = [];
+    if (filters.targetType) {
+      conditions.push('target_type = ?');
+      params.push(filters.targetType);
+    }
+    if (filters.targetId) {
+      conditions.push('target_id = ?');
+      params.push(filters.targetId);
+    }
+
+    const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    return (
+      this.db.prepare(`SELECT * FROM audit_events ${where} ORDER BY created_at, id`).all(...params) as AuditEventRow[]
+    ).map((row) =>
       mapAuditEventRow(row),
     );
   }

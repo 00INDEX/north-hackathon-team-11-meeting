@@ -14,7 +14,7 @@ export interface AuditEvent {
 export interface CreateAuditEventInput {
   id: string;
   eventType: string;
-  actor: string;
+  actor?: string;
   reason?: string;
   targetType: string;
   targetId: string;
