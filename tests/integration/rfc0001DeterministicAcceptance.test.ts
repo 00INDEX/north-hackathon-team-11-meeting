@@ -24,11 +24,11 @@ interface Reservation {
   roomId: string;
 }
 
-describe('RFC-0001 T6 deterministic cross-layer acceptance scenarios', () => {
-  let app: Hono;
-  let db: Database;
-  let tempDir: string;
+let app: Hono;
+let db: Database;
+let tempDir: string;
 
+describe('RFC-0001 T6 deterministic cross-layer acceptance scenarios', () => {
   beforeEach(() => {
     tempDir = mkdtempSync(path.join(os.tmpdir(), 'meeting-room-t6-'));
     db = openDatabase({ filePath: path.join(tempDir, 'meeting-room.sqlite3') });

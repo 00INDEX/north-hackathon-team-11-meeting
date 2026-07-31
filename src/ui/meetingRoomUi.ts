@@ -231,6 +231,12 @@ export function renderMeetingRoomApp(): string {
             <button type="submit">保存规则</button>
           </form>
           <div id="rule-message" class="notice" hidden></div>
+          <table data-testid="rules-table" style="margin-top: 16px;">
+            <thead>
+              <tr><th>状态</th><th>规则</th><th>目标</th><th>类型</th><th>原因</th><th>时段</th><th>操作</th></tr>
+            </thead>
+            <tbody id="rules-body"></tbody>
+          </table>
         </div>
       </section>
 
