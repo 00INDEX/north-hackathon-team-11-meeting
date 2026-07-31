@@ -100,6 +100,22 @@ test('extractDateAndTimeExpression handles combined date and time phrases', () =
       timeRange: { startTime: '00:00', endTime: '24:00' },
     },
   );
+
+  assert.deepEqual(
+    extractDateAndTimeExpression('下周二 10:00—11:00', { today: '2026-07-29' }),
+    {
+      date: '2026-08-04',
+      timeRange: { startTime: '10:00', endTime: '11:00' },
+    },
+  );
+
+  assert.deepEqual(
+    extractDateAndTimeExpression('这周三全天', { today: '2026-07-29' }),
+    {
+      date: '2026-07-29',
+      timeRange: { startTime: '00:00', endTime: '24:00' },
+    },
+  );
 });
 
 test('normalizeIntentTimeFields normalizes natural-language fields in an intent', () => {

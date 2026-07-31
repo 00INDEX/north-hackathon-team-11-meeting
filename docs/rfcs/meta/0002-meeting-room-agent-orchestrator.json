@@ -7,7 +7,7 @@
   ],
   "requires": [],
   "rfc": "0002",
-  "status": "implementing",
+  "status": "implemented",
   "tags": [
     "agent",
     "meeting-room",
@@ -46,7 +46,7 @@
       ],
       "id": "T4",
       "ref": null,
-      "status": "pending",
+      "status": "implemented",
       "title": "实现 Agent Orchestrator"
     },
     {
@@ -55,7 +55,7 @@
       ],
       "id": "T5",
       "ref": null,
-      "status": "pending",
+      "status": "implemented",
       "title": "实现响应格式与错误处理"
     },
     {
@@ -65,7 +65,7 @@
       ],
       "id": "T6",
       "ref": null,
-      "status": "pending",
+      "status": "implemented",
       "title": "完成场景测试与验收"
     }
   ],

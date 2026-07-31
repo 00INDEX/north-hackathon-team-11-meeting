@@ -21,7 +21,7 @@ test('createConversationHistoryClient fetches complete history contract', async 
     { role: 'system', content: '系统消息会被过滤' },
   ];
 
-  const client = createConversationHistoryClient('https://example.test', async (url, init) => {
+  const client = createConversationHistoryClient('https://example.test', async (url) => {
     assert.equal(String(url), 'https://example.test/api/conversations/conv%201/history');
 
     return new Response(JSON.stringify(historyPayload), {

@@ -9,7 +9,6 @@
  */
 
 import type { AgentError, AgentIntent } from './types.js';
-import type { NormalizeTimeOptions } from './time.js';
 import { normalizeIntentTimeFields } from './time.js';
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;

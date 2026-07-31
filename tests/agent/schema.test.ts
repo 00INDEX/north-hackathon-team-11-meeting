@@ -61,6 +61,38 @@ test('parseAgentIntent accepts create_unavailability_rule for one-time full-day 
   assert.equal(result.intent?.type, 'create_unavailability_rule');
 });
 
+test('parseAgentIntent accepts RFC-0002 506 rule correction intent', () => {
+  const createResult = parseAgentIntent(
+    JSON.stringify({
+      type: 'create_unavailability_rule',
+      target: 'room-506',
+      date: '2026-07-29',
+      timeRange: {
+        startTime: '00:00',
+        endTime: '24:00',
+      },
+      reason: '临时维修',
+    }),
+  );
+  const updateResult = parseAgentIntent(
+    JSON.stringify({
+      type: 'update_last_unavailability_rule',
+      target: 'room-506',
+      date: '2026-07-29',
+      timeRange: {
+        startTime: '13:00',
+        endTime: '18:00',
+      },
+      reason: '下午维修',
+    }),
+  );
+
+  assert.equal(createResult.error, undefined);
+  assert.equal(createResult.intent?.type, 'create_unavailability_rule');
+  assert.equal(updateResult.error, undefined);
+  assert.equal(updateResult.intent?.type, 'update_last_unavailability_rule');
+});
+
 test('parseAgentIntent accepts update_last_unavailability_rule', () => {
   const result = parseAgentIntent(
     JSON.stringify({
@@ -98,13 +130,14 @@ test('parseAgentIntent accepts create_combined_room', () => {
       type: 'create_combined_room',
       combinedRoomId: 'combined_room_1_2',
       name: '大会议室',
-      componentRoomIds: ['room_1', 'room_2'],
+      componentRoomIds: ['room-meeting-1', 'room-meeting-2'],
       capacity: 12,
     }),
   );
 
   assert.equal(result.error, undefined);
   assert.equal(result.intent?.type, 'create_combined_room');
+  assert.deepEqual(result.intent?.componentRoomIds, ['room-meeting-1', 'room-meeting-2']);
 });
 
 test('parseAgentIntent accepts need_clarification', () => {

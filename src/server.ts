@@ -6,7 +6,9 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
+import { createAgentMessageRoute } from '@/api/agent.js';
 import { APP_TIMEZONE, DEFAULT_OPEN_HOURS } from '@/config/app';
+import { validateStartupEnvironment } from '@/config/startupEnv.js';
 import { openDatabase, type Database } from '@/db';
 import { ensureDatabaseReady } from '@/db/ensure';
 import { appErrorHandler } from '@/errors/hono';
@@ -40,13 +42,19 @@ export function createApp(db: Database): Hono {
   app.route('/api', createAvailabilityRoutes(db));
   app.route('/api/reservations', createReservationRoutes(db));
   app.route('/api/audit-events', createAuditRoutes(db));
+  app.route('/', createAgentMessageRoute());
 
   return app;
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  validateStartupEnvironment();
 }
 
 export const app = createApp(openDatabase());
 
 export async function startServer(port = Number(process.env.PORT ?? 3000)) {
+  validateStartupEnvironment();
   ensureDatabaseReady();
 
   await new Promise<void>((resolve) => {

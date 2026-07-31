@@ -46,3 +46,32 @@ export {
   type NexParserRequest,
   type NexParserResult,
 } from './nex.js';
+
+export {
+  createBusinessApiClient,
+  orchestrateAgentIntent,
+  type AvailabilityCheckRequest,
+  type AvailabilityCheckResult,
+  type BackendBusinessApiClient,
+  type BackendBusinessApiErrorBody,
+  type BookingResult,
+  type ConflictDetail,
+  type CreateBookingRequest,
+  type CancelBookingRequest,
+  type ConflictCheckRequest,
+  type CreateBusinessApiClientOptions,
+  type CreateCombinedRoomRequest,
+  type CreateOrUpdateRoomRequest,
+  type CreateUnavailabilityRuleRequest,
+  type OrchestratorContext,
+  type OrchestratorResult,
+  type RoomResult,
+  type UnavailabilityRuleResult,
+} from './businessApi.js';
+
+export {
+  formatAgentMessage,
+  type AgentMessageResponse,
+  type FormatAgentMessageOptions,
+  type FormatAgentMessageResult,
+} from './formatter.js';
