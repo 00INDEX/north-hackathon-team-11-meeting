@@ -1,0 +1,73 @@
+{
+  "affects": "测试计划、端到端验证、Demo 剧本、NAC Agent 可观测性",
+  "created": "2026-07-31",
+  "priority": "P1",
+  "related": [],
+  "requires": [],
+  "rfc": "0003",
+  "status": "draft",
+  "tags": [
+    "testing",
+    "hackathon",
+    "agent",
+    "nac"
+  ],
+  "tasks": [
+    {
+      "depends_on": [],
+      "id": "T1",
+      "ref": null,
+      "status": "pending",
+      "title": "确认端到端测试范围与验收口径"
+    },
+    {
+      "depends_on": [
+        "T1"
+      ],
+      "id": "T2",
+      "ref": null,
+      "status": "pending",
+      "title": "完善分层测试用例与机器可读 assets"
+    },
+    {
+      "depends_on": [
+        "T2"
+      ],
+      "id": "T3",
+      "ref": null,
+      "status": "pending",
+      "title": "补齐 NAC Agent 可观测与工具调用断言设计"
+    },
+    {
+      "depends_on": [
+        "T2"
+      ],
+      "id": "T4",
+      "ref": null,
+      "status": "pending",
+      "title": "定义 Demo 主线与一键回放执行流程"
+    },
+    {
+      "depends_on": [
+        "T2"
+      ],
+      "id": "T5",
+      "ref": null,
+      "status": "pending",
+      "title": "明确非功能、并发、重置和降级验收标准"
+    },
+    {
+      "depends_on": [
+        "T3",
+        "T4",
+        "T5"
+      ],
+      "id": "T6",
+      "ref": null,
+      "status": "pending",
+      "title": "落地测试 RFC 文档、索引与评审流程"
+    }
+  ],
+  "title": "会务系统端到端测试 RFC",
+  "updated": "2026-07-31"
+}

@@ -20,6 +20,8 @@
 | RFC | 标题 | 状态 | 优先级 |
 |-----|------|------|--------|
 | [RFC-0001](./0001-local-meeting-room-system.md) | 本地会议室查询与预订系统 | implementing | P0 |
+| [RFC-0002](./0002-meeting-room-agent-orchestrator.md) | 会议室预约系统 Agent 编排设计 | draft | P1 |
+| [RFC-0003](./0003-meeting-e2e-test-rfc.md) | 会务系统端到端测试 | draft | P1 |
 
 ## RFC 编号规则
 
