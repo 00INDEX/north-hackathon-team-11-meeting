@@ -2,8 +2,12 @@
   "affects": "测试计划、端到端验证、Demo 剧本、NAC Agent 可观测性",
   "created": "2026-07-31",
   "priority": "P1",
-  "related": [],
-  "requires": [],
+  "related": [
+    "0002"
+  ],
+  "requires": [
+    "0001"
+  ],
   "rfc": "0003",
   "status": "draft",
   "tags": [
