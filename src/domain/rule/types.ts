@@ -1,5 +1,5 @@
-export type RuleTargetType = 'room' | 'resource';
-export type RuleType = 'open_hours' | 'periodic_block' | 'one_time_block';
+export type RuleTargetType = "room" | "resource";
+export type RuleType = "open_hours" | "periodic_block" | "one_time_block";
 
 export interface AvailabilityRule {
   id: string;

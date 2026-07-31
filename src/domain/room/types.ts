@@ -1,9 +1,5 @@
 export type RoomType =
-  | '多功能空间'
-  | '标准会议室'
-  | '组合会议室'
-  | '小会议室'
-  | string;
+  "多功能空间" | "标准会议室" | "组合会议室" | "小会议室" | string;
 
 export interface Room {
   id: string;

@@ -1,30 +1,39 @@
-import type { Database } from '@/db';
-import type { CreateAvailabilityRuleInput, AvailabilityRule } from '@/domain/rule/types';
+import type { Database } from "@/db";
+import type {
+  CreateAvailabilityRuleInput,
+  AvailabilityRule,
+} from "@/domain/rule/types";
 import {
   mapAvailabilityRuleRow,
   serializeAvailabilityRule,
   type AvailabilityRuleRow,
-} from '@/persistence/sqlite/mappers';
+} from "@/persistence/sqlite/mappers";
 
 export class AvailabilityRuleRepository {
   constructor(private readonly db: Database) {}
 
   findById(id: string): AvailabilityRule | undefined {
-    const row = this.db.prepare('SELECT * FROM availability_rules WHERE id = ?').get(id) as AvailabilityRuleRow | undefined;
+    const row = this.db
+      .prepare("SELECT * FROM availability_rules WHERE id = ?")
+      .get(id) as AvailabilityRuleRow | undefined;
     return row ? mapAvailabilityRuleRow(row) : undefined;
   }
 
   list(): AvailabilityRule[] {
-    return (this.db.prepare('SELECT * FROM availability_rules ORDER BY created_at, id').all() as AvailabilityRuleRow[]).map((row) =>
-      mapAvailabilityRuleRow(row),
-    );
+    return (
+      this.db
+        .prepare("SELECT * FROM availability_rules ORDER BY created_at, id")
+        .all() as AvailabilityRuleRow[]
+    ).map((row) => mapAvailabilityRuleRow(row));
   }
 
   upsert(input: CreateAvailabilityRuleInput): AvailabilityRule {
     const now = new Date().toISOString();
-    const existing = this.db.prepare('SELECT created_at AS createdAt FROM availability_rules WHERE id = ?').get(input.id) as
-      | { createdAt: string }
-      | undefined;
+    const existing = this.db
+      .prepare(
+        "SELECT created_at AS createdAt FROM availability_rules WHERE id = ?",
+      )
+      .get(input.id) as { createdAt: string } | undefined;
     const row = serializeAvailabilityRule({
       ...input,
       createdAt: input.createdAt ?? existing?.createdAt,

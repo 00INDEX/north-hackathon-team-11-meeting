@@ -5,30 +5,38 @@
  *
  * Stores physical resources that reservations occupy exclusively.
  */
-import type { Database } from '@/db';
-import type { CreateResourceInput, Resource } from '@/domain/resource/types';
-import { mapResourceRow, serializeResource, type ResourceRow } from '@/persistence/sqlite/mappers';
+import type { Database } from "@/db";
+import type { CreateResourceInput, Resource } from "@/domain/resource/types";
+import {
+  mapResourceRow,
+  serializeResource,
+  type ResourceRow,
+} from "@/persistence/sqlite/mappers";
 
 export class ResourceRepository {
   constructor(private readonly db: Database) {}
 
   findById(id: string): Resource | undefined {
-    const row = this.db.prepare('SELECT * FROM resources WHERE id = ?').get(id) as ResourceRow | undefined;
+    const row = this.db
+      .prepare("SELECT * FROM resources WHERE id = ?")
+      .get(id) as ResourceRow | undefined;
     return row ? mapResourceRow(row) : undefined;
   }
 
   list(): Resource[] {
-    return (this.db.prepare('SELECT * FROM resources ORDER BY created_at, id').all() as ResourceRow[]).map((row) =>
-      mapResourceRow(row),
-    );
+    return (
+      this.db
+        .prepare("SELECT * FROM resources ORDER BY created_at, id")
+        .all() as ResourceRow[]
+    ).map((row) => mapResourceRow(row));
   }
 
   upsertMany(input: CreateResourceInput[]): Resource[] {
     for (const resource of input) {
       const now = new Date().toISOString();
-      const existing = this.db.prepare('SELECT created_at AS createdAt FROM resources WHERE id = ?').get(resource.id) as
-        | { createdAt: string }
-        | undefined;
+      const existing = this.db
+        .prepare("SELECT created_at AS createdAt FROM resources WHERE id = ?")
+        .get(resource.id) as { createdAt: string } | undefined;
       const row = serializeResource({
         ...resource,
         createdAt: resource.createdAt ?? existing?.createdAt,

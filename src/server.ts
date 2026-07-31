@@ -10,9 +10,12 @@ import { APP_TIMEZONE, DEFAULT_OPEN_HOURS } from '@/config/app';
 import { openDatabase, type Database } from '@/db';
 import { ensureDatabaseReady } from '@/db/ensure';
 import { appErrorHandler } from '@/errors/hono';
+import { createAvailabilityRoutes } from '@/server/routes/availabilityRoutes';
 import { createAuditRoutes } from '@/server/routes/auditRoutes';
+import { createReservationRoutes } from '@/server/routes/reservationRoutes';
 import { createRoomRoutes } from '@/server/routes/roomRoutes';
 import { createRuleRoutes } from '@/server/routes/ruleRoutes';
+import { renderMeetingRoomApp } from '@/ui/meetingRoomUi';
 
 export function createApp(db: Database): Hono {
   const app = new Hono();
@@ -29,32 +32,13 @@ export function createApp(db: Database): Hono {
   });
 
   app.get('/', (c) => {
-    return c.html(`
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>本地会议室查询与预订系统</title>
-  </head>
-  <body>
-    <main>
-      <h1>本地会议室查询与预订系统</h1>
-      <p>RFC-0001 本地运行入口已启动。当前子任务实现房间配置、规则管理与审计 API。</p>
-      <ul>
-        <li><a href="/health">/health</a></li>
-        <li><a href="/api/rooms">/api/rooms</a></li>
-        <li><a href="/api/rules">/api/rules</a></li>
-        <li><a href="/api/audit-events">/api/audit-events</a></li>
-      </ul>
-    </main>
-  </body>
-</html>
-`);
+    return c.html(renderMeetingRoomApp());
   });
 
   app.route('/api/rooms', createRoomRoutes(db));
   app.route('/api/rules', createRuleRoutes(db));
+  app.route('/api', createAvailabilityRoutes(db));
+  app.route('/api/reservations', createReservationRoutes(db));
   app.route('/api/audit-events', createAuditRoutes(db));
 
   return app;

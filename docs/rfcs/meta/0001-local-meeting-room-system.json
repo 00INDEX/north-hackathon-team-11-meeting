@@ -25,7 +25,7 @@
       ],
       "id": "T2",
       "ref": null,
-      "status": "in-progress",
+      "status": "implemented",
       "title": "房间配置与规则管理"
     },
     {
@@ -35,7 +35,7 @@
       ],
       "id": "T3",
       "ref": null,
-      "status": "pending",
+      "status": "implemented",
       "title": "可用性与冲突引擎"
     },
     {
@@ -44,7 +44,7 @@
       ],
       "id": "T4",
       "ref": null,
-      "status": "pending",
+      "status": "implemented",
       "title": "预约生命周期与管理员调整"
     },
     {
@@ -54,7 +54,7 @@
       ],
       "id": "T5",
       "ref": null,
-      "status": "pending",
+      "status": "implemented",
       "title": "列表、日历与管理界面"
     },
     {
@@ -63,7 +63,7 @@
       ],
       "id": "T6",
       "ref": null,
-      "status": "pending",
+      "status": "in-progress",
       "title": "跨层验收与运行文档"
     }
   ],

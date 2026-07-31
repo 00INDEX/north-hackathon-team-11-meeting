@@ -1,5 +1,5 @@
-import type { ErrorHandler } from 'hono';
-import { isAppError } from './AppError';
+import type { ErrorHandler } from "hono";
+import { isAppError } from "./AppError";
 
 export const appErrorHandler: ErrorHandler = (error, c) => {
   if (isAppError(error)) {
@@ -9,8 +9,8 @@ export const appErrorHandler: ErrorHandler = (error, c) => {
   return c.json(
     {
       error: {
-        code: 'INTERNAL_ERROR',
-        message: 'Internal server error',
+        code: "INTERNAL_ERROR",
+        message: "Internal server error",
       },
     },
     500,

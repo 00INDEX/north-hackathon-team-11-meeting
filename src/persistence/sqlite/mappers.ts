@@ -1,8 +1,15 @@
-import type { Room, CreateRoomInput } from '@/domain/room/types';
-import type { Resource, CreateResourceInput } from '@/domain/resource/types';
-import type { AvailabilityRule, CreateAvailabilityRuleInput } from '@/domain/rule/types';
-import type { Reservation, CreateReservationInput, ReservationResourceSnapshot } from '@/domain/reservation/types';
-import type { AuditEvent, CreateAuditEventInput } from '@/domain/audit/types';
+import type { Room, CreateRoomInput } from "@/domain/room/types";
+import type { Resource, CreateResourceInput } from "@/domain/resource/types";
+import type {
+  AvailabilityRule,
+  CreateAvailabilityRuleInput,
+} from "@/domain/rule/types";
+import type {
+  Reservation,
+  CreateReservationInput,
+  ReservationResourceSnapshot,
+} from "@/domain/reservation/types";
+import type { AuditEvent, CreateAuditEventInput } from "@/domain/audit/types";
 
 export interface RoomRow {
   id: string;
@@ -132,12 +139,14 @@ export function mapRoomResourceRow(row: RoomResourceRow) {
   };
 }
 
-export function mapAvailabilityRuleRow(row: AvailabilityRuleRow): AvailabilityRule {
+export function mapAvailabilityRuleRow(
+  row: AvailabilityRuleRow,
+): AvailabilityRule {
   return {
     id: row.id,
-    targetType: row.target_type as AvailabilityRule['targetType'],
+    targetType: row.target_type as AvailabilityRule["targetType"],
     targetId: row.target_id,
-    ruleType: row.rule_type as AvailabilityRule['ruleType'],
+    ruleType: row.rule_type as AvailabilityRule["ruleType"],
     reason: row.reason,
     enabled: row.enabled === 1,
     isSystem: row.is_system === 1,
@@ -158,7 +167,7 @@ export function mapReservationRow(row: ReservationRow): Reservation {
     roomId: row.room_id,
     start: row.start,
     end: row.end,
-    status: row.status as Reservation['status'],
+    status: row.status as Reservation["status"],
     idempotencyKey: row.idempotency_key,
     version: row.version,
     createdAt: row.created_at,
@@ -168,7 +177,9 @@ export function mapReservationRow(row: ReservationRow): Reservation {
   };
 }
 
-export function mapReservationResourceRow(row: ReservationResourceRow): ReservationResourceSnapshot {
+export function mapReservationResourceRow(
+  row: ReservationResourceRow,
+): ReservationResourceSnapshot {
   return {
     reservationId: row.reservation_id,
     resourceId: row.resource_id,
@@ -205,8 +216,8 @@ export function serializeRoom(row: CreateRoomInput) {
     location: row.location,
     equipment_json: JSON.stringify(row.equipment ?? []),
     enabled: row.enabled === false ? 0 : 1,
-    open_start: row.openStart ?? '08:00',
-    open_end: row.openEnd ?? '22:00',
+    open_start: row.openStart ?? "08:00",
+    open_end: row.openEnd ?? "22:00",
     version: row.version ?? 1,
     created_at: row.createdAt ?? new Date().toISOString(),
     updated_at: row.updatedAt ?? new Date().toISOString(),
@@ -217,7 +228,7 @@ export function serializeResource(row: CreateResourceInput) {
   return {
     id: row.id,
     name: row.name,
-    type: row.type ?? 'physical-space',
+    type: row.type ?? "physical-space",
     enabled: row.enabled === false ? 0 : 1,
     version: row.version ?? 1,
     created_at: row.createdAt ?? new Date().toISOString(),
@@ -247,11 +258,11 @@ export function serializeReservation(row: CreateReservationInput) {
   return {
     id: row.id,
     title: row.title,
-    description: row.description ?? '',
+    description: row.description ?? "",
     room_id: row.roomId,
     start: row.start,
     end: row.end,
-    status: row.status ?? 'active',
+    status: row.status ?? "active",
     idempotency_key: row.idempotencyKey ?? null,
     version: row.version ?? 1,
     created_at: row.createdAt ?? new Date().toISOString(),
@@ -266,7 +277,7 @@ export function serializeAuditEvent(row: CreateAuditEventInput) {
     id: row.id,
     event_type: row.eventType,
     actor: row.actor,
-    reason: row.reason ?? '',
+    reason: row.reason ?? "",
     target_type: row.targetType,
     target_id: row.targetId,
     before_json: row.before ? JSON.stringify(row.before) : null,

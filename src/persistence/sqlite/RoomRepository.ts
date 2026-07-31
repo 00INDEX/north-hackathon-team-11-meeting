@@ -1,4 +1,4 @@
-import type { Database } from '@/db';
+import type { Database } from "@/db";
 import {
   mapResourceRow,
   mapRoomResourceRow,
@@ -8,9 +8,9 @@ import {
   type ResourceRow,
   type RoomResourceRow,
   type RoomRow,
-} from '@/persistence/sqlite/mappers';
-import type { Resource, CreateResourceInput } from '@/domain/resource/types';
-import type { Room, CreateRoomInput } from '@/domain/room/types';
+} from "@/persistence/sqlite/mappers";
+import type { Resource, CreateResourceInput } from "@/domain/resource/types";
+import type { Room, CreateRoomInput } from "@/domain/room/types";
 
 export interface RoomWithResources extends Room {
   resources: Resource[];
@@ -20,26 +20,32 @@ export class RoomRepository {
   constructor(private readonly db: Database) {}
 
   findById(id: string): Room | undefined {
-    const row = this.db.prepare('SELECT * FROM rooms WHERE id = ?').get(id) as RoomRow | undefined;
+    const row = this.db.prepare("SELECT * FROM rooms WHERE id = ?").get(id) as
+      RoomRow | undefined;
     return row ? mapRoomRow(row) : undefined;
   }
 
   list(): Room[] {
-    return (this.db.prepare('SELECT * FROM rooms ORDER BY created_at, id').all() as RoomRow[]).map((row) =>
-      mapRoomRow(row),
-    );
+    return (
+      this.db
+        .prepare("SELECT * FROM rooms ORDER BY created_at, id")
+        .all() as RoomRow[]
+    ).map((row) => mapRoomRow(row));
   }
 
   listWithResources(): RoomWithResources[] {
     const rooms = this.list();
     const mappings = (
-      this.db.prepare('SELECT * FROM room_resources ORDER BY room_id, resource_id').all() as RoomResourceRow[]
+      this.db
+        .prepare("SELECT * FROM room_resources ORDER BY room_id, resource_id")
+        .all() as RoomResourceRow[]
     ).map((row) => mapRoomResourceRow(row));
     const resourcesById = new Map(
-      (this.db.prepare('SELECT * FROM resources ORDER BY created_at, id').all() as ResourceRow[]).map((row) => [
-        mapResourceRow(row).id,
-        mapResourceRow(row),
-      ]),
+      (
+        this.db
+          .prepare("SELECT * FROM resources ORDER BY created_at, id")
+          .all() as ResourceRow[]
+      ).map((row) => [mapResourceRow(row).id, mapResourceRow(row)]),
     );
 
     return rooms.map((room) => ({
@@ -53,9 +59,9 @@ export class RoomRepository {
 
   upsert(input: CreateRoomInput): Room {
     const now = new Date().toISOString();
-    const existing = this.db.prepare('SELECT created_at AS createdAt FROM rooms WHERE id = ?').get(input.id) as
-      | { createdAt: string }
-      | undefined;
+    const existing = this.db
+      .prepare("SELECT created_at AS createdAt FROM rooms WHERE id = ?")
+      .get(input.id) as { createdAt: string } | undefined;
     const row = serializeRoom({
       ...input,
       createdAt: input.createdAt ?? existing?.createdAt,
@@ -89,7 +95,11 @@ export class RoomRepository {
   upsertResources(input: CreateResourceInput[]): Resource[] {
     for (const resource of input) {
       const now = new Date().toISOString();
-      const exists = Boolean(this.db.prepare('SELECT 1 FROM resources WHERE id = ?').get(resource.id));
+      const exists = Boolean(
+        this.db
+          .prepare("SELECT 1 FROM resources WHERE id = ?")
+          .get(resource.id),
+      );
       const row = serializeResource({
         ...resource,
         createdAt: resource.createdAt ?? (exists ? now : undefined),
@@ -117,16 +127,20 @@ export class RoomRepository {
   }
 
   listResources(): Resource[] {
-    return (this.db.prepare('SELECT * FROM resources ORDER BY created_at, id').all() as ResourceRow[]).map((row) =>
-      mapResourceRow(row),
-    );
+    return (
+      this.db
+        .prepare("SELECT * FROM resources ORDER BY created_at, id")
+        .all() as ResourceRow[]
+    ).map((row) => mapResourceRow(row));
   }
 
   upsertRoomResources(roomId: string, resourceIds: string[]): void {
     const now = new Date().toISOString();
     const existing = new Set(
       (
-        this.db.prepare('SELECT resource_id FROM room_resources WHERE room_id = ?').all(roomId) as Array<{
+        this.db
+          .prepare("SELECT resource_id FROM room_resources WHERE room_id = ?")
+          .all(roomId) as Array<{
           resource_id: string;
         }>
       ).map((row) => row.resource_id),
@@ -148,17 +162,25 @@ export class RoomRepository {
     const now = new Date().toISOString();
     const desired = new Set(resourceIds);
     const existingRows = this.db
-      .prepare('SELECT resource_id, created_at FROM room_resources WHERE room_id = ?')
+      .prepare(
+        "SELECT resource_id, created_at FROM room_resources WHERE room_id = ?",
+      )
       .all(roomId) as Array<{ resource_id: string; created_at: string }>;
 
     for (const row of existingRows) {
       if (!desired.has(row.resource_id)) {
-        this.db.prepare('DELETE FROM room_resources WHERE room_id = ? AND resource_id = ?').run(roomId, row.resource_id);
+        this.db
+          .prepare(
+            "DELETE FROM room_resources WHERE room_id = ? AND resource_id = ?",
+          )
+          .run(roomId, row.resource_id);
       }
     }
 
     for (const resourceId of resourceIds) {
-      const existing = existingRows.find((row) => row.resource_id === resourceId);
+      const existing = existingRows.find(
+        (row) => row.resource_id === resourceId,
+      );
       this.db
         .prepare(
           `INSERT INTO room_resources (room_id, resource_id, version, created_at, updated_at)

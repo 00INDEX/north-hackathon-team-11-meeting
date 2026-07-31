@@ -5,9 +5,9 @@
  *
  * All local date and calendar boundaries are interpreted in Asia/Shanghai and persisted as UTC.
  */
-import { APP_TIMEZONE } from '@/config/app';
+import { APP_TIMEZONE } from "@/config/app";
 
-export { APP_TIMEZONE } from '@/config/app';
+export { APP_TIMEZONE } from "@/config/app";
 
 export const SHANGHAI_TIMEZONE = APP_TIMEZONE;
 
@@ -89,68 +89,79 @@ function localDateTimeToUtcISOString(parts: DateTimeParts): string {
     parts.second,
     0,
   );
-  for (let offsetMinutes = -16 * 60; offsetMinutes <= 16 * 60; offsetMinutes += 60) {
+  for (
+    let offsetMinutes = -16 * 60;
+    offsetMinutes <= 16 * 60;
+    offsetMinutes += 60
+  ) {
     const candidate = localWallClock - offsetMinutes * 60_000;
     if (matchesShanghaiParts(candidate, parts)) {
       return new Date(candidate).toISOString();
     }
   }
 
-  throw new Error(`Unable to convert local Asia/Shanghai datetime: ${JSON.stringify(parts)}`);
+  throw new Error(
+    `Unable to convert local Asia/Shanghai datetime: ${JSON.stringify(parts)}`,
+  );
 }
 
-function matchesShanghaiParts(timestamp: number, expected: DateTimeParts): boolean {
+function matchesShanghaiParts(
+  timestamp: number,
+  expected: DateTimeParts,
+): boolean {
   const actual = toShanghaiDateTimeParts(new Date(timestamp));
-  return actual.year === expected.year &&
+  return (
+    actual.year === expected.year &&
     actual.month === expected.month &&
     actual.day === expected.day &&
     actual.hour === expected.hour &&
     actual.minute === expected.minute &&
-    actual.second === expected.second;
+    actual.second === expected.second
+  );
 }
 
 function toShanghaiDateTimeParts(date: Date): DateTimeParts {
-  const parts = new Intl.DateTimeFormat('en-US', {
+  const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: SHANGHAI_TIMEZONE,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hourCycle: 'h23',
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
   }).formatToParts(date);
   const value = (name: Intl.DateTimeFormatPartTypes): number =>
     Number(parts.find((part) => part.type === name)?.value ?? 0);
 
   return {
-    year: value('year'),
-    month: value('month'),
-    day: value('day'),
-    hour: value('hour'),
-    minute: value('minute'),
-    second: value('second'),
+    year: value("year"),
+    month: value("month"),
+    day: value("day"),
+    hour: value("hour"),
+    minute: value("minute"),
+    second: value("second"),
   };
 }
 
 export function formatLocalDate(value: string | Date): string {
-  const date = typeof value === 'string' ? parseUtc(value) : value;
-  return new Intl.DateTimeFormat('zh-CN', {
+  const date = typeof value === "string" ? parseUtc(value) : value;
+  return new Intl.DateTimeFormat("zh-CN", {
     timeZone: SHANGHAI_TIMEZONE,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   }).format(date);
 }
 
 export function getShanghaiWeekday(value: string | Date): number {
-  const date = typeof value === 'string' ? parseUtc(value) : value;
-  const parts = new Intl.DateTimeFormat('en-US', {
+  const date = typeof value === "string" ? parseUtc(value) : value;
+  const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: SHANGHAI_TIMEZONE,
-    weekday: 'short',
+    weekday: "short",
   }).formatToParts(date);
-  const weekday = parts.find((part) => part.type === 'weekday')?.value ?? 'Sun';
-  return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(weekday);
+  const weekday = parts.find((part) => part.type === "weekday")?.value ?? "Sun";
+  return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(weekday);
 }
 
 export function isWeekdayInShanghai(value: string | Date): boolean {

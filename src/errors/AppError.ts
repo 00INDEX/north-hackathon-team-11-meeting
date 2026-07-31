@@ -6,12 +6,7 @@
  * All API validation and domain failures are returned through this stable body.
  */
 export type ConflictType =
-  | 'room'
-  | 'resource'
-  | 'rule'
-  | 'reservation'
-  | 'version'
-  | 'time';
+  "room" | "resource" | "rule" | "reservation" | "version" | "time";
 
 export interface ConflictDetail {
   type: ConflictType;
@@ -23,16 +18,18 @@ export interface ConflictDetail {
 }
 
 export type AppErrorCode =
-  | 'VALIDATION_ERROR'
-  | 'OUTSIDE_OPEN_HOURS'
-  | 'RULE_BLOCKED'
-  | 'RESERVATION_CONFLICT'
-  | 'NOT_FOUND'
-  | 'FORCE_REASON_REQUIRED'
-  | 'IDEMPOTENCY_CONFLICT'
-  | 'VERSION_CONFLICT'
-  | 'DATABASE_ERROR'
-  | 'INTERNAL_ERROR';
+  | "VALIDATION_ERROR"
+  | "OUTSIDE_OPEN_HOURS"
+  | "RULE_BLOCKED"
+  | "RESERVATION_CONFLICT"
+  | "NOT_FOUND"
+  | "FORCE_REASON_REQUIRED"
+  | "IDEMPOTENCY_CONFLICT"
+  | "VERSION_CONFLICT"
+  | "INVALID_STATE"
+  | "INVALID_ARGUMENT"
+  | "DATABASE_ERROR"
+  | "INTERNAL_ERROR";
 
 export interface AppErrorBody {
   error: {
@@ -53,7 +50,7 @@ export class AppError extends Error {
     options: { status?: number; conflicts?: ConflictDetail[] } = {},
   ) {
     super(message);
-    this.name = 'AppError';
+    this.name = "AppError";
     this.code = code;
     this.conflicts = options.conflicts;
     this.status = options.status ?? defaultStatusForCode(code);
@@ -72,16 +69,16 @@ export class AppError extends Error {
 
 function defaultStatusForCode(code: AppErrorCode): number {
   switch (code) {
-    case 'NOT_FOUND':
+    case "NOT_FOUND":
       return 404;
-    case 'FORCE_REASON_REQUIRED':
-    case 'VALIDATION_ERROR':
-    case 'OUTSIDE_OPEN_HOURS':
-    case 'RULE_BLOCKED':
-    case 'RESERVATION_CONFLICT':
-    case 'VERSION_CONFLICT':
+    case "FORCE_REASON_REQUIRED":
+    case "VALIDATION_ERROR":
+    case "OUTSIDE_OPEN_HOURS":
+    case "RULE_BLOCKED":
+    case "RESERVATION_CONFLICT":
+    case "VERSION_CONFLICT":
       return 409;
-    case 'IDEMPOTENCY_CONFLICT':
+    case "IDEMPOTENCY_CONFLICT":
       return 409;
     default:
       return 500;

@@ -1,9 +1,9 @@
-import { mkdirSync, rmSync } from 'node:fs';
-import path from 'node:path';
-import { defaultDatabasePath } from './database';
-import { closeDatabase, openDatabase } from './index';
-import { runMigrations } from './migrations';
-import { seedDatabase } from './seedData';
+import { mkdirSync, rmSync } from "node:fs";
+import path from "node:path";
+import { defaultDatabasePath } from "./database";
+import { closeDatabase, openDatabase } from "./index";
+import { runMigrations } from "./migrations";
+import { seedDatabase } from "./seedData";
 
 const databasePath = process.argv[2] ?? defaultDatabasePath();
 mkdirSync(path.dirname(databasePath), { recursive: true });

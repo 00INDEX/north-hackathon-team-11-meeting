@@ -1,9 +1,9 @@
-import { mkdirSync } from 'node:fs';
-import path from 'node:path';
-import { createDatabase, type Database } from './database';
+import { mkdirSync } from "node:fs";
+import path from "node:path";
+import { createDatabase, type Database } from "./database";
 
-export type { Database } from './database';
-export { getMigrations, runMigrations } from './migrations';
+export type { Database } from "./database";
+export { getMigrations, runMigrations } from "./migrations";
 
 export interface DatabaseOptions {
   filePath?: string;
@@ -17,13 +17,12 @@ export function openDatabase(options: DatabaseOptions = {}): Database {
   }
 
   const db = createDatabase(filePath);
-  db.pragma('foreign_keys = ON');
-  db.pragma('journal_mode = WAL');
-  db.pragma('busy_timeout = 5000');
+  db.pragma("foreign_keys = ON");
+  db.pragma("busy_timeout = 5000");
+  db.pragma("journal_mode = WAL");
   return db;
 }
 
 export function closeDatabase(db: Database): void {
   db.close();
 }
-
