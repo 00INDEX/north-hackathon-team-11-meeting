@@ -5,7 +5,7 @@
   "related": [],
   "requires": [],
   "rfc": "0001",
-  "status": "implementing",
+  "status": "implemented",
   "tags": [
     "meeting-room",
     "typescript",
@@ -63,7 +63,7 @@
       ],
       "id": "T6",
       "ref": null,
-      "status": "in-progress",
+      "status": "implemented",
       "title": "跨层验收与运行文档"
     }
   ],
