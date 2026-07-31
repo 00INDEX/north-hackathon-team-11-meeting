@@ -9,7 +9,11 @@ import type { Database } from "@/db";
 import type { AuditContext } from "@/domain/audit/AuditService";
 import { AvailabilityService } from "@/domain/availability";
 import { RoomService } from "@/domain/room/RoomService";
-import type { CreateRoomInput, UpdateRoomInput } from "@/domain/room/types";
+import type {
+  CreateCombinedRoomInput,
+  CreateRoomInput,
+  UpdateRoomInput,
+} from "@/domain/room/types";
 
 export function createRoomRoutes(db: Database) {
   const app = new Hono();
@@ -17,6 +21,11 @@ export function createRoomRoutes(db: Database) {
   const availabilityService = new AvailabilityService(db);
 
   app.get("/", (c) => c.json(service.listWithResources()));
+
+  app.post("/combined", async (c) => {
+    const body = (await c.req.json()) as CreateCombinedRoomInput;
+    return c.json(service.createCombined(body, auditContext(c)), 201);
+  });
 
   app.get("/:roomId", (c) => {
     const room = service.findById(c.req.param("roomId"));

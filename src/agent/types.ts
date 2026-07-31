@@ -13,14 +13,14 @@
  * RFC-0002: Defines the allowed AgentIntent values and their routing semantics.
  */
 export type AgentIntentType =
-  | 'query_available_rooms'
-  | 'create_booking'
-  | 'cancel_booking'
-  | 'create_unavailability_rule'
-  | 'update_last_unavailability_rule'
-  | 'create_or_update_room'
-  | 'create_combined_room'
-  | 'need_clarification';
+  | "query_available_rooms"
+  | "create_booking"
+  | "cancel_booking"
+  | "create_unavailability_rule"
+  | "update_last_unavailability_rule"
+  | "create_or_update_room"
+  | "create_combined_room"
+  | "need_clarification";
 
 /**
  * Error type surfaced by Agent parsing, validation, orchestration, or backend calls.
@@ -28,12 +28,12 @@ export type AgentIntentType =
  * RFC-0002: Error types are stable so the response formatter can explain failures consistently.
  */
 export type AgentErrorType =
-  | 'need_clarification'
-  | 'permission_denied'
-  | 'conflict'
-  | 'not_found'
-  | 'backend_unavailable'
-  | 'parse_failed';
+  | "need_clarification"
+  | "permission_denied"
+  | "conflict"
+  | "not_found"
+  | "backend_unavailable"
+  | "parse_failed";
 
 /**
  * Time range shared by availability, booking, and unavailability rules.
@@ -51,7 +51,7 @@ export interface AgentTimeRange {
  * RFC-0002: Filters capture room type, capacity, equipment, and combined-room needs.
  */
 export interface AvailabilityFilters {
-  roomType?: 'small' | 'medium' | 'large' | 'activity' | 'combined';
+  roomType?: "small" | "medium" | "large" | "activity" | "combined";
   minCapacity?: number;
   equipment?: string[];
   combinedRoom?: boolean;
@@ -79,7 +79,7 @@ export interface AgentIntentBase {
  * Query available meeting rooms for a date and time range.
  */
 export interface QueryAvailableRoomsIntent extends AgentIntentBase {
-  type: 'query_available_rooms';
+  type: "query_available_rooms";
   date: string;
   timeRange: AgentTimeRange;
   filters?: AvailabilityFilters;
@@ -89,8 +89,7 @@ export interface QueryAvailableRoomsIntent extends AgentIntentBase {
  * Create a booking through the backend booking API.
  */
 export interface CreateBookingIntent extends AgentIntentBase {
-  type: 'create_booking';
-  userId: string;
+  type: "create_booking";
   roomId: string;
   date: string;
   timeRange: AgentTimeRange;
@@ -103,7 +102,7 @@ export interface CreateBookingIntent extends AgentIntentBase {
  * Cancel an existing booking.
  */
 export interface CancelBookingIntent extends AgentIntentBase {
-  type: 'cancel_booking';
+  type: "cancel_booking";
   bookingId?: string;
   roomId?: string;
   date?: string;
@@ -116,7 +115,7 @@ export interface CancelBookingIntent extends AgentIntentBase {
  * Create a temporary or recurring unavailability rule.
  */
 export interface CreateUnavailabilityRuleIntent extends AgentIntentBase {
-  type: 'create_unavailability_rule';
+  type: "create_unavailability_rule";
   target: string;
   date?: string;
   timeRange?: AgentTimeRange;
@@ -126,26 +125,30 @@ export interface CreateUnavailabilityRuleIntent extends AgentIntentBase {
 
 /**
  * Update the last unavailability rule mentioned in the conversation history.
+ *
+ * RFC-0003 T1: ruleId is accepted when available so the adapter can PATCH the
+ * authoritative /api/rules/:ruleId resource instead of a private last-rule endpoint.
  */
 export interface UpdateLastUnavailabilityRuleIntent extends AgentIntentBase {
-  type: 'update_last_unavailability_rule';
+  type: "update_last_unavailability_rule";
   target?: string;
   date?: string;
   timeRange?: AgentTimeRange;
   recurring?: WeeklyRecurringRule;
   reason?: string;
+  ruleId?: string;
 }
 
 /**
  * Create or update room metadata.
  */
 export interface CreateOrUpdateRoomIntent extends AgentIntentBase {
-  type: 'create_or_update_room';
+  type: "create_or_update_room";
   roomId: string;
   name?: string;
   location?: string;
   capacity?: number;
-  roomType?: 'small' | 'medium' | 'large' | 'activity';
+  roomType?: "small" | "medium" | "large" | "activity";
   equipment?: string[];
 }
 
@@ -153,7 +156,7 @@ export interface CreateOrUpdateRoomIntent extends AgentIntentBase {
  * Create a combined room from component room IDs.
  */
 export interface CreateCombinedRoomIntent extends AgentIntentBase {
-  type: 'create_combined_room';
+  type: "create_combined_room";
   combinedRoomId: string;
   name?: string;
   componentRoomIds: string[];
@@ -165,18 +168,18 @@ export interface CreateCombinedRoomIntent extends AgentIntentBase {
  * Ask the user for missing information before invoking backend APIs.
  */
 export interface NeedClarificationIntent extends AgentIntentBase {
-  type: 'need_clarification';
+  type: "need_clarification";
   missingFields: Array<
-    | 'date'
-    | 'startTime'
-    | 'endTime'
-    | 'roomId'
-    | 'target'
-    | 'bookingId'
-    | 'timeRange'
-    | 'title'
-    | 'reason'
-    | 'componentRoomIds'
+    | "date"
+    | "startTime"
+    | "endTime"
+    | "roomId"
+    | "target"
+    | "bookingId"
+    | "timeRange"
+    | "title"
+    | "reason"
+    | "componentRoomIds"
   >;
   clarification: string;
 }
@@ -210,7 +213,7 @@ export interface AgentError {
  */
 export interface AgentAction {
   type: string;
-  status: 'planned' | 'started' | 'completed' | 'failed';
+  status: "planned" | "started" | "completed" | "failed";
   endpoint?: string;
   payload?: unknown;
   result?: unknown;

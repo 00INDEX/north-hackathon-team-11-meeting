@@ -14,9 +14,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, "..", "..");
 
 export function defaultDatabasePath(): string {
-  return process.env.DATABASE_URL
-    ? process.env.DATABASE_URL.replace(/^file:/, "")
-    : path.join(projectRoot, "data", "meeting-room.sqlite3");
+  if (process.env.DATABASE_URL) {
+    return process.env.DATABASE_URL.replace(/^file:/, "");
+  }
+
+  const dataDirectory = process.env.DATA_DIR?.trim();
+  return path.join(
+    dataDirectory
+      ? path.resolve(dataDirectory)
+      : path.join(projectRoot, "data"),
+    "meeting-room.sqlite3",
+  );
 }
 
 export function createDatabase(filePath = defaultDatabasePath()): Database {

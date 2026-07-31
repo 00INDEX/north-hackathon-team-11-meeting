@@ -31,6 +31,19 @@ export interface CreateRoomInput {
   updatedAt?: string;
 }
 
+/**
+ * Minimal RFC-0004 extension for composing one logical room from existing
+ * physical room resources.
+ */
+export interface CreateCombinedRoomInput {
+  id: string;
+  name?: string;
+  componentRoomIds: string[];
+  capacity?: number;
+  location?: string;
+  equipment?: string[];
+}
+
 export interface UpdateRoomInput {
   name?: string;
   type?: RoomType;

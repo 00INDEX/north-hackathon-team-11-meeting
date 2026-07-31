@@ -27,7 +27,7 @@ export class RuleService {
   constructor(
     private readonly db: Database,
     private readonly repository = new AvailabilityRuleRepository(db),
-    auditRepository = new AuditEventRepository(db),
+    private readonly auditRepository = new AuditEventRepository(db),
   ) {
     this.auditService = new AuditService(auditRepository);
   }
@@ -52,6 +52,10 @@ export class RuleService {
     input: CreateAvailabilityRuleInput,
     context: AuditContext = {},
   ): AvailabilityRule {
+    const replay = this.replayedRule("rule.created", undefined, context);
+    if (replay) {
+      return replay;
+    }
     const candidate: AvailabilityRule = {
       ...input,
       enabled: input.enabled ?? true,
@@ -84,6 +88,10 @@ export class RuleService {
     patch: UpdateAvailabilityRuleInput,
     context: AuditContext = {},
   ): AvailabilityRule {
+    const replay = this.replayedRule("rule.updated", id, context);
+    if (replay) {
+      return replay;
+    }
     const existing = this.repository.findById(id);
     if (!existing) {
       throw new AppError("NOT_FOUND", `规则不存在: ${id}`, {
@@ -167,6 +175,10 @@ export class RuleService {
     patch: UpdateAvailabilityRuleInput,
     context: AuditContext = {},
   ): AvailabilityRule {
+    const replay = this.replayedRule("rule.updated", id, context);
+    if (replay) {
+      return replay;
+    }
     const existing = this.repository.findById(id);
     if (!existing) {
       throw new AppError("NOT_FOUND", `规则不存在: ${id}`, {
@@ -214,6 +226,36 @@ export class RuleService {
       context,
     );
     return updated;
+  }
+
+  private replayedRule(
+    eventType: "rule.created" | "rule.updated",
+    targetId: string | undefined,
+    context: AuditContext,
+  ): AvailabilityRule | undefined {
+    if (!context.idempotencyKey) {
+      return undefined;
+    }
+    const prior = this.auditRepository.findByIdempotencyKey(
+      context.idempotencyKey,
+    );
+    if (!prior) {
+      return undefined;
+    }
+    if (
+      prior.eventType !== eventType ||
+      (targetId !== undefined && prior.targetId !== targetId)
+    ) {
+      throw new AppError(
+        "IDEMPOTENCY_CONFLICT",
+        `幂等键已用于其他规则操作: ${context.idempotencyKey}`,
+      );
+    }
+    const rule = this.repository.findById(prior.targetId);
+    if (!rule) {
+      throw new AppError("INTERNAL_ERROR", "幂等规则操作的目标记录不存在");
+    }
+    return rule;
   }
 }
 

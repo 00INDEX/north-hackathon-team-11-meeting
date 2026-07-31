@@ -22,7 +22,7 @@ export type {
   QueryAvailableRoomsIntent,
   UpdateLastUnavailabilityRuleIntent,
   WeeklyRecurringRule,
-} from './types.js';
+} from "./types.js";
 
 export type {
   NormalizedDateExpression,
@@ -30,30 +30,33 @@ export type {
   NormalizedTimeRangeExpression,
   NormalizeTimeOptions,
   TimeExpressionParts,
-} from './time.js';
+} from "./time.js";
 
 export {
   extractDateAndTimeExpression,
   normalizeDateExpression,
   normalizeIntentTimeFields,
   normalizeTimeRangeExpression,
-} from './time.js';
+} from "./time.js";
 
-export { parseAgentIntent, validateAgentIntent } from './schema.js';
+export { parseAgentIntent, validateAgentIntent } from "./schema.js";
 export {
   createNexLLMClient,
   type NexLLMClientConfig,
   type NexParserRequest,
   type NexParserResult,
-} from './nex.js';
+} from "./nex.js";
 
 export {
   createBusinessApiClient,
+  createStableIdempotencyKey,
   orchestrateAgentIntent,
+  resolveRoomReference,
   type AvailabilityCheckRequest,
   type AvailabilityCheckResult,
   type BackendBusinessApiClient,
   type BackendBusinessApiErrorBody,
+  type BackendRoom,
   type BookingResult,
   type ConflictDetail,
   type CreateBookingRequest,
@@ -66,12 +69,13 @@ export {
   type OrchestratorContext,
   type OrchestratorResult,
   type RoomResult,
+  type ResolveRoomReferenceOptions,
   type UnavailabilityRuleResult,
-} from './businessApi.js';
+} from "./businessApi.js";
 
 export {
   formatAgentMessage,
   type AgentMessageResponse,
   type FormatAgentMessageOptions,
   type FormatAgentMessageResult,
-} from './formatter.js';
+} from "./formatter.js";

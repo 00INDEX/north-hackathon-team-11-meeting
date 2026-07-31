@@ -39,16 +39,17 @@ export interface TimeExpressionParts {
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
-const EXPLICIT_TIME_RANGE_PATTERN = /^((?:[01]\d|2[0-3]):[0-5]\d)\s*(?:到|至|—|-|~|～)\s*((?:[01]\d|2[0-3]):[0-5]\d|24:00)$/;
-const DEFAULT_TIME_ZONE = 'Asia/Shanghai';
-const END_OF_DAY_TIME = '24:00';
+const EXPLICIT_TIME_RANGE_PATTERN =
+  /^((?:[01]\d|2[0-3]):[0-5]\d)\s*(?:到|至|—|-|~|～)\s*((?:[01]\d|2[0-3]):[0-5]\d|24:00)$/;
+const DEFAULT_TIME_ZONE = "Asia/Shanghai";
+const END_OF_DAY_TIME = "24:00";
 
 const DEFAULT_TIME_RANGES: Record<string, NormalizedTimeRange> = {
-  morning: { startTime: '09:00', endTime: '12:00' },
-  noon: { startTime: '11:30', endTime: '13:30' },
-  afternoon: { startTime: '13:00', endTime: '18:00' },
-  evening: { startTime: '18:00', endTime: '21:00' },
-  fullDay: { startTime: '00:00', endTime: '24:00' },
+  morning: { startTime: "09:00", endTime: "12:00" },
+  noon: { startTime: "11:30", endTime: "13:30" },
+  afternoon: { startTime: "13:00", endTime: "18:00" },
+  evening: { startTime: "18:00", endTime: "21:00" },
+  fullDay: { startTime: "00:00", endTime: "24:00" },
 };
 
 /**
@@ -56,10 +57,17 @@ const DEFAULT_TIME_RANGES: Record<string, NormalizedTimeRange> = {
  *
  * RFC-0002: Relative date semantics are deterministic and timezone-aware.
  */
-export function normalizeDateExpression(expression: string, options: NormalizeTimeOptions = {}): NormalizedDateExpression {
+export function normalizeDateExpression(
+  expression: string,
+  options: NormalizeTimeOptions = {},
+): NormalizedDateExpression {
   const original = expression.trim();
-  if (original === '') {
-    return { valid: false, original, reason: 'date expression must not be empty.' };
+  if (original === "") {
+    return {
+      valid: false,
+      original,
+      reason: "date expression must not be empty.",
+    };
   }
 
   if (DATE_PATTERN.test(original)) {
@@ -83,10 +91,16 @@ export function normalizeDateExpression(expression: string, options: NormalizeTi
  *
  * RFC-0002: Default time ranges are applied before backend conflict checking.
  */
-export function normalizeTimeRangeExpression(expression: string): NormalizedTimeRangeExpression {
+export function normalizeTimeRangeExpression(
+  expression: string,
+): NormalizedTimeRangeExpression {
   const original = expression.trim();
-  if (original === '') {
-    return { valid: false, original, reason: 'time expression must not be empty.' };
+  if (original === "") {
+    return {
+      valid: false,
+      original,
+      reason: "time expression must not be empty.",
+    };
   }
 
   const defaultRange = normalizeDefaultTimeRange(original);
@@ -115,11 +129,18 @@ export function normalizeTimeRangeExpression(expression: string): NormalizedTime
 export function normalizeIntentTimeFields(
   intent: Record<string, unknown>,
   options: NormalizeTimeOptions = {},
-): { valid: true; intent: Record<string, unknown> } | { valid: false; error: { message: string } } {
+):
+  | { valid: true; intent: Record<string, unknown> }
+  | { valid: false; error: { message: string } } {
   const updated: Record<string, unknown> = { ...intent };
-  const dateExpression = typeof updated.date === 'string' ? updated.date : undefined;
-  const timeRangeExpression = typeof updated.timeRange === 'string' ? updated.timeRange : undefined;
-  const combinedParts = extractDateAndTimeExpression(`${dateExpression ?? ''} ${timeRangeExpression ?? ''}`.trim(), options);
+  const dateExpression =
+    typeof updated.date === "string" ? updated.date : undefined;
+  const timeRangeExpression =
+    typeof updated.timeRange === "string" ? updated.timeRange : undefined;
+  const combinedParts = extractDateAndTimeExpression(
+    `${dateExpression ?? ""} ${timeRangeExpression ?? ""}`.trim(),
+    options,
+  );
 
   if (updated.date === undefined && combinedParts.date) {
     updated.date = combinedParts.date;
@@ -129,7 +150,7 @@ export function normalizeIntentTimeFields(
     updated.timeRange = combinedParts.timeRange;
   }
 
-  if (typeof updated.date === 'string') {
+  if (typeof updated.date === "string") {
     const dateValidation = normalizeDateExpression(updated.date, options);
     if (!dateValidation.valid) {
       return { valid: false, error: { message: dateValidation.reason } };
@@ -137,7 +158,7 @@ export function normalizeIntentTimeFields(
     updated.date = dateValidation.date;
   }
 
-  if (typeof updated.timeRange === 'string') {
+  if (typeof updated.timeRange === "string") {
     const timeRangeValidation = normalizeTimeRangeExpression(updated.timeRange);
     if (!timeRangeValidation.valid) {
       return { valid: false, error: { message: timeRangeValidation.reason } };
@@ -153,36 +174,48 @@ export function normalizeIntentTimeFields(
  *
  * RFC-0002: Supports phrases like `明天中午`, `下周二上午`, `本周五下午` and `全天`.
  */
-export function extractDateAndTimeExpression(phrase: string, options: NormalizeTimeOptions = {}): TimeExpressionParts {
+export function extractDateAndTimeExpression(
+  phrase: string,
+  options: NormalizeTimeOptions = {},
+): TimeExpressionParts {
   const normalizedPhrase = phrase.trim();
-  if (normalizedPhrase === '') {
+  if (normalizedPhrase === "") {
     return {};
   }
 
   const dateExpression = extractDateExpression(normalizedPhrase);
   const timeExpression = extractTimeExpression(normalizedPhrase);
-  const normalizedDate = dateExpression ? normalizeDateExpression(dateExpression, options) : undefined;
-  const normalizedTimeRange = timeExpression ? normalizeTimeRangeExpression(timeExpression) : undefined;
+  const normalizedDate = dateExpression
+    ? normalizeDateExpression(dateExpression, options)
+    : undefined;
+  const normalizedTimeRange = timeExpression
+    ? normalizeTimeRangeExpression(timeExpression)
+    : undefined;
 
   return {
     ...(normalizedDate?.valid ? { date: normalizedDate.date } : {}),
-    ...(normalizedTimeRange?.valid ? { timeRange: normalizedTimeRange.timeRange } : {}),
+    ...(normalizedTimeRange?.valid
+      ? { timeRange: normalizedTimeRange.timeRange }
+      : {}),
   };
 }
 
-function normalizeRelativeDate(expression: string, options: NormalizeTimeOptions): string | undefined {
+function normalizeRelativeDate(
+  expression: string,
+  options: NormalizeTimeOptions,
+): string | undefined {
   const today = resolveToday(options);
   const lower = expression.toLowerCase();
 
-  if (lower === '今天' || lower === '今日' || lower === 'today') {
+  if (lower === "今天" || lower === "今日" || lower === "today") {
     return formatDate(today);
   }
 
-  if (lower === '明天' || lower === '明日' || lower === 'tomorrow') {
+  if (lower === "明天" || lower === "明日" || lower === "tomorrow") {
     return formatDate(addDays(today, 1));
   }
 
-  if (lower === '后天' || lower === '後天' || lower === 'day after tomorrow') {
+  if (lower === "后天" || lower === "後天" || lower === "day after tomorrow") {
     return formatDate(addDays(today, 2));
   }
 
@@ -194,45 +227,64 @@ function normalizeRelativeDate(expression: string, options: NormalizeTimeOptions
   return undefined;
 }
 
-function parseRelativeWeekday(expression: string, today: Date): { offset: number } | undefined {
+function parseRelativeWeekday(
+  expression: string,
+  today: Date,
+): { offset: number } | undefined {
   const weekday = parseWeekday(expression);
   if (weekday === undefined) {
     return undefined;
   }
 
-  const todayWeekday = today.getDay();
-  let offset = weekday - todayWeekday;
+  const todayWeekday = today.getUTCDay();
+  const mondayBasedToday = todayWeekday === 0 ? 6 : todayWeekday - 1;
+  const mondayBasedTarget = weekday === 0 ? 6 : weekday - 1;
+  const offsetWithinCurrentWeek = mondayBasedTarget - mondayBasedToday;
 
-  if (expression.startsWith('上周') || expression.startsWith('上个星期') || expression.startsWith('上个礼拜')) {
-    offset -= 7;
+  if (
+    expression.startsWith("上周") ||
+    expression.startsWith("上个星期") ||
+    expression.startsWith("上个礼拜")
+  ) {
+    return { offset: offsetWithinCurrentWeek - 7 };
   }
 
-  if (expression.startsWith('本周') || expression.startsWith('这周') || expression.startsWith('这个星期') || expression.startsWith('这礼拜')) {
-    if (offset < 0) {
-      return undefined;
-    }
+  if (
+    expression.startsWith("本周") ||
+    expression.startsWith("这周") ||
+    expression.startsWith("这个星期") ||
+    expression.startsWith("这礼拜")
+  ) {
+    return offsetWithinCurrentWeek < 0
+      ? undefined
+      : { offset: offsetWithinCurrentWeek };
   }
 
-  if (expression.startsWith('下周') || expression.startsWith('下个星期') || expression.startsWith('下个礼拜')) {
-    offset += 7;
+  if (
+    expression.startsWith("下周") ||
+    expression.startsWith("下个星期") ||
+    expression.startsWith("下个礼拜")
+  ) {
+    return { offset: offsetWithinCurrentWeek + 7 };
   }
 
-  if (offset < 0) {
-    offset += 7;
-  }
-
-  return { offset };
+  return {
+    offset:
+      offsetWithinCurrentWeek < 0
+        ? offsetWithinCurrentWeek + 7
+        : offsetWithinCurrentWeek,
+  };
 }
 
 function parseWeekday(expression: string): number | undefined {
   const aliases: Record<number, string[]> = {
-    0: ['周日', '星期天', '礼拜日', '礼拜天'],
-    1: ['周一', '星期一', '礼拜一'],
-    2: ['周二', '星期二', '礼拜二'],
-    3: ['周三', '星期三', '礼拜三'],
-    4: ['周四', '星期四', '礼拜四'],
-    5: ['周五', '星期五', '礼拜五'],
-    6: ['周六', '星期六', '礼拜六'],
+    0: ["周日", "星期天", "礼拜日", "礼拜天"],
+    1: ["周一", "星期一", "礼拜一"],
+    2: ["周二", "星期二", "礼拜二"],
+    3: ["周三", "星期三", "礼拜三"],
+    4: ["周四", "星期四", "礼拜四"],
+    5: ["周五", "星期五", "礼拜五"],
+    6: ["周六", "星期六", "礼拜六"],
   };
 
   for (const [day, names] of Object.entries(aliases)) {
@@ -244,33 +296,37 @@ function parseWeekday(expression: string): number | undefined {
   return undefined;
 }
 
-function normalizeDefaultTimeRange(expression: string): NormalizedTimeRange | undefined {
+function normalizeDefaultTimeRange(
+  expression: string,
+): NormalizedTimeRange | undefined {
   const lower = expression.toLowerCase();
 
-  if (lower === '上午' || lower === '早上' || lower === 'morning') {
+  if (lower === "上午" || lower === "早上" || lower === "morning") {
     return DEFAULT_TIME_RANGES.morning;
   }
 
-  if (lower === '中午' || lower === '午间' || lower === 'noon') {
+  if (lower === "中午" || lower === "午间" || lower === "noon") {
     return DEFAULT_TIME_RANGES.noon;
   }
 
-  if (lower === '下午' || lower === 'afternoon') {
+  if (lower === "下午" || lower === "afternoon") {
     return DEFAULT_TIME_RANGES.afternoon;
   }
 
-  if (lower === '晚上' || lower === '晚间' || lower === 'evening') {
+  if (lower === "晚上" || lower === "晚间" || lower === "evening") {
     return DEFAULT_TIME_RANGES.evening;
   }
 
-  if (lower === '全天' || lower === '整天' || lower === 'all day') {
+  if (lower === "全天" || lower === "整天" || lower === "all day") {
     return DEFAULT_TIME_RANGES.fullDay;
   }
 
   return undefined;
 }
 
-function parseExplicitTimeRange(expression: string): NormalizedTimeRange | undefined {
+function parseExplicitTimeRange(
+  expression: string,
+): NormalizedTimeRange | undefined {
   const match = EXPLICIT_TIME_RANGE_PATTERN.exec(expression);
   if (!match) {
     return undefined;
@@ -281,7 +337,11 @@ function parseExplicitTimeRange(expression: string): NormalizedTimeRange | undef
   const startMinutes = timeToMinutes(startTime);
   const endMinutes = timeToMinutes(endTime);
 
-  if (startMinutes === undefined || endMinutes === undefined || startMinutes >= endMinutes) {
+  if (
+    startMinutes === undefined ||
+    endMinutes === undefined ||
+    startMinutes >= endMinutes
+  ) {
     return undefined;
   }
 
@@ -295,7 +355,7 @@ function extractDateExpression(phrase: string): string | undefined {
   }
 
   const relativePatterns = [
-    /(本周|这周|这个星期|下周|下个星期|这礼拜|下个礼拜)[一二三四五六日天]/,
+    /(上周|上个星期|上个礼拜|本周|这周|这个星期|下周|下个星期|这礼拜|下个礼拜)[一二三四五六日天]/,
     /明天/,
     /明日/,
     /后天/,
@@ -315,12 +375,25 @@ function extractDateExpression(phrase: string): string | undefined {
 }
 
 function extractTimeExpression(phrase: string): string | undefined {
-  const explicitRange = /((?:[01]\d|2[0-3]):[0-5]\d)\s*(?:到|至|—|-|~|～)\s*((?:[01]\d|2[0-3]):[0-5]\d|24:00)/.exec(phrase);
+  const explicitRange =
+    /((?:[01]\d|2[0-3]):[0-5]\d)\s*(?:到|至|—|-|~|～)\s*((?:[01]\d|2[0-3]):[0-5]\d|24:00)/.exec(
+      phrase,
+    );
   if (explicitRange) {
     return explicitRange[0];
   }
 
-  const defaultTimeExpressions = ['全天', '下午', '上午', '中午', '晚上', '早上', '午间', '晚间', '整天'];
+  const defaultTimeExpressions = [
+    "全天",
+    "下午",
+    "上午",
+    "中午",
+    "晚上",
+    "早上",
+    "午间",
+    "晚间",
+    "整天",
+  ];
   for (const expression of defaultTimeExpressions) {
     if (phrase.includes(expression)) {
       return expression;
@@ -338,21 +411,23 @@ function resolveToday(options: NormalizeTimeOptions): Date {
     }
   }
 
-  const timeZone = options.timeZone ?? process.env.MEETING_ROOM_TIME_ZONE ?? DEFAULT_TIME_ZONE;
+  const timeZone =
+    options.timeZone ?? process.env.MEETING_ROOM_TIME_ZONE ?? DEFAULT_TIME_ZONE;
   return getTodayInTimeZone(timeZone);
 }
 
 function getTodayInTimeZone(timeZone: string): Date {
   try {
-    const formatter = new Intl.DateTimeFormat('en-CA', {
+    const formatter = new Intl.DateTimeFormat("en-CA", {
       timeZone,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
     });
     const parts = Object.fromEntries(
-      formatter.formatToParts(new Date())
-        .filter((part) => part.type !== 'literal')
+      formatter
+        .formatToParts(new Date())
+        .filter((part) => part.type !== "literal")
         .map((part) => [part.type, part.value]),
     ) as Record<string, string>;
     const parsed = parseDateOnly(`${parts.year}-${parts.month}-${parts.day}`);
@@ -368,14 +443,14 @@ function getTodayInTimeZone(timeZone: string): Date {
 
 function addDays(date: Date, days: number): Date {
   const result = new Date(date);
-  result.setDate(result.getDate() + days);
+  result.setUTCDate(result.getUTCDate() + days);
   return result;
 }
 
 function formatDate(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
 
@@ -384,19 +459,30 @@ function parseDateOnly(value: string): Date | undefined {
     return undefined;
   }
 
-  const [year, month, day] = value.split('-').map(Number);
+  const [year, month, day] = value.split("-").map(Number);
   const date = new Date(Date.UTC(year, month - 1, day));
-  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
     return undefined;
   }
 
   return date;
 }
 
-function validateDateString(value: string, path: string): NormalizedDateExpression {
+function validateDateString(
+  value: string,
+  path: string,
+): NormalizedDateExpression {
   const parsed = parseDateOnly(value);
   if (!parsed) {
-    return { valid: false, original: value, reason: `${path} must be a valid calendar date.` };
+    return {
+      valid: false,
+      original: value,
+      reason: `${path} must be a valid calendar date.`,
+    };
   }
 
   return { valid: true, date: value, original: value };

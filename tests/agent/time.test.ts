@@ -1,24 +1,24 @@
-import assert from 'node:assert/strict';
-import test from 'node:test';
+import assert from "node:assert/strict";
+import test from "node:test";
 import {
   extractDateAndTimeExpression,
   normalizeDateExpression,
   normalizeIntentTimeFields,
   normalizeTimeRangeExpression,
-} from '../../src/agent/time.js';
+} from "../../src/agent/time.js";
 
-test('normalizeDateExpression handles relative dates anchored to a fixed today', () => {
+test("normalizeDateExpression handles relative dates anchored to a fixed today", () => {
   const cases = [
-    ['下周二', '2026-08-04'],
-    ['本周五', '2026-07-31'],
-    ['明天', '2026-07-30'],
-    ['后天', '2026-07-31'],
-    ['今天', '2026-07-29'],
-    ['2026-08-05', '2026-08-05'],
+    ["下周二", "2026-08-04"],
+    ["本周五", "2026-07-31"],
+    ["明天", "2026-07-30"],
+    ["后天", "2026-07-31"],
+    ["今天", "2026-07-29"],
+    ["2026-08-05", "2026-08-05"],
   ] as const;
 
   for (const [expression, expected] of cases) {
-    const result = normalizeDateExpression(expression, { today: '2026-07-29' });
+    const result = normalizeDateExpression(expression, { today: "2026-07-29" });
     assert.equal(result.valid, true);
     if (result.valid) {
       assert.equal(result.date, expected);
@@ -26,8 +26,8 @@ test('normalizeDateExpression handles relative dates anchored to a fixed today',
   }
 });
 
-test('normalizeDateExpression rejects unsupported relative dates', () => {
-  const result = normalizeDateExpression('大后天', { today: '2026-07-29' });
+test("normalizeDateExpression rejects unsupported relative dates", () => {
+  const result = normalizeDateExpression("大后天", { today: "2026-07-29" });
 
   assert.equal(result.valid, false);
   if (!result.valid) {
@@ -35,13 +35,53 @@ test('normalizeDateExpression rejects unsupported relative dates', () => {
   }
 });
 
-test('normalizeTimeRangeExpression handles RFC-0002 default time semantics', () => {
+test("normalizeDateExpression handles previous week, past current-week dates, and year boundaries", () => {
+  const previousWeek = normalizeDateExpression("上周六", {
+    today: "2026-07-31",
+  });
+  assert.equal(previousWeek.valid && previousWeek.date, "2026-07-25");
+
+  const pastThisWeek = normalizeDateExpression("本周二", {
+    today: "2026-07-31",
+  });
+  assert.equal(pastThisWeek.valid, false);
+
+  const crossMonth = normalizeDateExpression("明天", { today: "2026-07-31" });
+  assert.equal(crossMonth.valid && crossMonth.date, "2026-08-01");
+
+  const crossYear = normalizeDateExpression("明天", { today: "2026-12-31" });
+  assert.equal(crossYear.valid && crossYear.date, "2027-01-01");
+});
+
+test("normalizeDateExpression uses the configured timezone rather than host local time", () => {
+  const originalDate = globalThis.Date;
+  class FixedDate extends Date {
+    constructor(value?: string | number | Date) {
+      super(value ?? "2026-07-31T16:30:00.000Z");
+    }
+
+    static override now() {
+      return new originalDate("2026-07-31T16:30:00.000Z").getTime();
+    }
+  }
+  globalThis.Date = FixedDate as DateConstructor;
+  try {
+    const result = normalizeDateExpression("今天", {
+      timeZone: "Asia/Shanghai",
+    });
+    assert.equal(result.valid && result.date, "2026-08-01");
+  } finally {
+    globalThis.Date = originalDate;
+  }
+});
+
+test("normalizeTimeRangeExpression handles RFC-0002 default time semantics", () => {
   const cases = [
-    ['上午', { startTime: '09:00', endTime: '12:00' }],
-    ['中午', { startTime: '11:30', endTime: '13:30' }],
-    ['下午', { startTime: '13:00', endTime: '18:00' }],
-    ['晚上', { startTime: '18:00', endTime: '21:00' }],
-    ['全天', { startTime: '00:00', endTime: '24:00' }],
+    ["上午", { startTime: "09:00", endTime: "12:00" }],
+    ["中午", { startTime: "11:30", endTime: "13:30" }],
+    ["下午", { startTime: "13:00", endTime: "18:00" }],
+    ["晚上", { startTime: "18:00", endTime: "21:00" }],
+    ["全天", { startTime: "00:00", endTime: "24:00" }],
   ] as const;
 
   for (const [expression, expected] of cases) {
@@ -53,11 +93,11 @@ test('normalizeTimeRangeExpression handles RFC-0002 default time semantics', () 
   }
 });
 
-test('normalizeTimeRangeExpression handles explicit time ranges', () => {
+test("normalizeTimeRangeExpression handles explicit time ranges", () => {
   const cases = [
-    ['10:00-11:00', { startTime: '10:00', endTime: '11:00' }],
-    ['14:00到16:00', { startTime: '14:00', endTime: '16:00' }],
-    ['00:00-24:00', { startTime: '00:00', endTime: '24:00' }],
+    ["10:00-11:00", { startTime: "10:00", endTime: "11:00" }],
+    ["14:00到16:00", { startTime: "14:00", endTime: "16:00" }],
+    ["00:00-24:00", { startTime: "00:00", endTime: "24:00" }],
   ] as const;
 
   for (const [expression, expected] of cases) {
@@ -69,71 +109,73 @@ test('normalizeTimeRangeExpression handles explicit time ranges', () => {
   }
 });
 
-test('extractDateAndTimeExpression handles combined date and time phrases', () => {
+test("extractDateAndTimeExpression handles combined date and time phrases", () => {
   assert.deepEqual(
-    extractDateAndTimeExpression('下周二 10:00 到 11:00', { today: '2026-07-29' }),
+    extractDateAndTimeExpression("下周二 10:00 到 11:00", {
+      today: "2026-07-29",
+    }),
     {
-      date: '2026-08-04',
-      timeRange: { startTime: '10:00', endTime: '11:00' },
+      date: "2026-08-04",
+      timeRange: { startTime: "10:00", endTime: "11:00" },
     },
   );
 
   assert.deepEqual(
-    extractDateAndTimeExpression('明天中午', { today: '2026-07-29' }),
+    extractDateAndTimeExpression("明天中午", { today: "2026-07-29" }),
     {
-      date: '2026-07-30',
-      timeRange: { startTime: '11:30', endTime: '13:30' },
+      date: "2026-07-30",
+      timeRange: { startTime: "11:30", endTime: "13:30" },
     },
   );
 
   assert.deepEqual(
-    extractDateAndTimeExpression('本周五下午', { today: '2026-07-29' }),
+    extractDateAndTimeExpression("本周五下午", { today: "2026-07-29" }),
     {
-      date: '2026-07-31',
-      timeRange: { startTime: '13:00', endTime: '18:00' },
+      date: "2026-07-31",
+      timeRange: { startTime: "13:00", endTime: "18:00" },
     },
   );
 
   assert.deepEqual(
-    extractDateAndTimeExpression('全天', { today: '2026-07-29' }),
+    extractDateAndTimeExpression("全天", { today: "2026-07-29" }),
     {
-      timeRange: { startTime: '00:00', endTime: '24:00' },
+      timeRange: { startTime: "00:00", endTime: "24:00" },
     },
   );
 
   assert.deepEqual(
-    extractDateAndTimeExpression('下周二 10:00—11:00', { today: '2026-07-29' }),
+    extractDateAndTimeExpression("下周二 10:00—11:00", { today: "2026-07-29" }),
     {
-      date: '2026-08-04',
-      timeRange: { startTime: '10:00', endTime: '11:00' },
+      date: "2026-08-04",
+      timeRange: { startTime: "10:00", endTime: "11:00" },
     },
   );
 
   assert.deepEqual(
-    extractDateAndTimeExpression('这周三全天', { today: '2026-07-29' }),
+    extractDateAndTimeExpression("这周三全天", { today: "2026-07-29" }),
     {
-      date: '2026-07-29',
-      timeRange: { startTime: '00:00', endTime: '24:00' },
+      date: "2026-07-29",
+      timeRange: { startTime: "00:00", endTime: "24:00" },
     },
   );
 });
 
-test('normalizeIntentTimeFields normalizes natural-language fields in an intent', () => {
+test("normalizeIntentTimeFields normalizes natural-language fields in an intent", () => {
   const result = normalizeIntentTimeFields(
     {
-      type: 'query_available_rooms',
-      date: '下周二',
-      timeRange: '下午',
+      type: "query_available_rooms",
+      date: "下周二",
+      timeRange: "下午",
     },
-    { today: '2026-07-29' },
+    { today: "2026-07-29" },
   );
 
   assert.equal(result.valid, true);
   if (result.valid) {
     assert.deepEqual(result.intent, {
-      type: 'query_available_rooms',
-      date: '2026-08-04',
-      timeRange: { startTime: '13:00', endTime: '18:00' },
+      type: "query_available_rooms",
+      date: "2026-08-04",
+      timeRange: { startTime: "13:00", endTime: "18:00" },
     });
   }
 });

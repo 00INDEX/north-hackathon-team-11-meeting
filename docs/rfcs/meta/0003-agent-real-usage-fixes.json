@@ -1,0 +1,56 @@
+{
+  "affects": "src/agent, src/api, src/server/routes, src/db, tests, docs, package.json, .env.example",
+  "created": "2026-07-31",
+  "priority": "P1",
+  "related": [],
+  "requires": ["0001", "0002"],
+  "rfc": "0003",
+  "status": "implementing",
+  "tags": ["agent", "meeting-room", "typescript"],
+  "tasks": [
+    {
+      "depends_on": [],
+      "id": "T1",
+      "ref": null,
+      "status": "in-progress",
+      "title": "修复启动基线与后端权威 API 契约"
+    },
+    {
+      "depends_on": ["T1"],
+      "id": "T2",
+      "ref": null,
+      "status": "pending",
+      "title": "实现服务端会话历史、Demo 身份和 Agent 路由安全边界"
+    },
+    {
+      "depends_on": ["T1", "T2"],
+      "id": "T3",
+      "ref": null,
+      "status": "pending",
+      "title": "重写 Agent 房间解析、规则修改和取消预约编排"
+    },
+    {
+      "depends_on": ["T3"],
+      "id": "T4",
+      "ref": null,
+      "status": "pending",
+      "title": "强化 LLM 时间上下文、Schema 严格校验和响应运行时校验"
+    },
+    {
+      "depends_on": ["T1", "T2", "T3", "T4"],
+      "id": "T5",
+      "ref": null,
+      "status": "pending",
+      "title": "补齐 P0/P1 测试、真实 SQLite 场景和 opt-in Nex smoke"
+    },
+    {
+      "depends_on": ["T5"],
+      "id": "T6",
+      "ref": null,
+      "status": "pending",
+      "title": "更新文档、运行门禁和 RFC 状态记录"
+    }
+  ],
+  "title": "Agent 真实可用修复计划",
+  "updated": "2026-07-31"
+}

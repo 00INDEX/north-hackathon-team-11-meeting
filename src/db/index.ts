@@ -1,6 +1,6 @@
 import { mkdirSync } from "node:fs";
 import path from "node:path";
-import { createDatabase, type Database } from "./database";
+import { createDatabase, defaultDatabasePath, type Database } from "./database";
 
 export type { Database } from "./database";
 export { getMigrations, runMigrations } from "./migrations";
@@ -11,10 +11,8 @@ export interface DatabaseOptions {
 }
 
 export function openDatabase(options: DatabaseOptions = {}): Database {
-  const filePath = options.filePath;
-  if (filePath) {
-    mkdirSync(path.dirname(filePath), { recursive: true });
-  }
+  const filePath = options.filePath ?? defaultDatabasePath();
+  mkdirSync(path.dirname(filePath), { recursive: true });
 
   const db = createDatabase(filePath);
   db.pragma("foreign_keys = ON");

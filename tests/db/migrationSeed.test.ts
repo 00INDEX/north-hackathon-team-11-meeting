@@ -39,7 +39,7 @@ describe("SQLite migrations and seed data", () => {
     runMigrations(db);
 
     expect(getMigrations(db).map((migration) => migration.id)).toEqual([
-      1, 2, 3,
+      1, 2, 3, 4,
     ]);
     const tableNames = db
       .prepare(
@@ -56,6 +56,8 @@ describe("SQLite migrations and seed data", () => {
         "reservation_resources",
         "availability_rules",
         "audit_events",
+        "conversations",
+        "conversation_messages",
         "schema_migrations",
       ]),
     );
