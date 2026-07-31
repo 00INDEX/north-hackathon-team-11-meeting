@@ -7,7 +7,7 @@
   ],
   "requires": [],
   "rfc": "0002",
-  "status": "draft",
+  "status": "implementing",
   "tags": [
     "agent",
     "meeting-room",
@@ -17,8 +17,8 @@
     {
       "depends_on": [],
       "id": "T1",
-      "ref": null,
-      "status": "pending",
+      "ref": "b8e8272",
+      "status": "implemented",
       "title": "定义 AgentIntent 与 JSON Schema"
     },
     {
@@ -26,8 +26,8 @@
         "T1"
       ],
       "id": "T2",
-      "ref": null,
-      "status": "pending",
+      "ref": "b8e8272",
+      "status": "implemented",
       "title": "实现 Nex LLM Parser"
     },
     {
@@ -35,8 +35,8 @@
         "T1"
       ],
       "id": "T3",
-      "ref": null,
-      "status": "pending",
+      "ref": "b8e8272",
+      "status": "implemented",
       "title": "实现时间归一化与历史上下文输入"
     },
     {
