@@ -1,0 +1,72 @@
+{
+  "affects": "Web UI, API, domain services, SQLite, tests, documentation",
+  "created": "2026-07-31",
+  "priority": "P0",
+  "related": [],
+  "requires": [],
+  "rfc": "0001",
+  "status": "implementing",
+  "tags": [
+    "meeting-room",
+    "typescript",
+    "sqlite"
+  ],
+  "tasks": [
+    {
+      "depends_on": [],
+      "id": "T1",
+      "ref": null,
+      "status": "implemented",
+      "title": "工程与持久化基线"
+    },
+    {
+      "depends_on": [
+        "T1"
+      ],
+      "id": "T2",
+      "ref": null,
+      "status": "pending",
+      "title": "房间配置与规则管理"
+    },
+    {
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
+      "id": "T3",
+      "ref": null,
+      "status": "pending",
+      "title": "可用性与冲突引擎"
+    },
+    {
+      "depends_on": [
+        "T3"
+      ],
+      "id": "T4",
+      "ref": null,
+      "status": "pending",
+      "title": "预约生命周期与管理员调整"
+    },
+    {
+      "depends_on": [
+        "T2",
+        "T4"
+      ],
+      "id": "T5",
+      "ref": null,
+      "status": "pending",
+      "title": "列表、日历与管理界面"
+    },
+    {
+      "depends_on": [
+        "T5"
+      ],
+      "id": "T6",
+      "ref": null,
+      "status": "pending",
+      "title": "跨层验收与运行文档"
+    }
+  ],
+  "title": "本地会议室查询与预订系统",
+  "updated": "2026-07-31"
+}
