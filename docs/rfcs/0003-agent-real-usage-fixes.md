@@ -205,10 +205,10 @@ flowchart LR
 
 ### 阶段划分
 
-- [ ] Phase 1：修复启动基线、`.env` 加载和 RFC-0001 权威 API adapter。
-- [ ] Phase 2：实现服务端会话历史、Demo 用户身份和安全请求边界。
-- [ ] Phase 3：补强 parser 时间上下文、房间/规则/预约解析、schema 严格校验和响应校验。
-- [ ] Phase 4：补齐 P0/P1 自动化测试、真实 SQLite 场景和 opt-in Nex smoke。
+- [x] Phase 1：修复启动基线、`.env` 加载和 RFC-0001 权威 API adapter。
+- [x] Phase 2：实现服务端会话历史、Demo 用户身份和安全请求边界。
+- [x] Phase 3：补强 parser 时间上下文、房间/规则/预约解析、schema 严格校验和响应校验。
+- [x] Phase 4：补齐 P0/P1 自动化测试、真实 SQLite 场景和 opt-in Nex smoke。
 
 ### 子任务分解
 
@@ -228,12 +228,12 @@ graph LR
 
 | ID  | 标题                                                 | 依赖           | Ref |
 | --- | ---------------------------------------------------- | -------------- | --- |
-| T1  | 修复启动基线与 RFC-0001 API 适配                     | -              | -   |
-| T2  | 实现服务端会话历史、Demo 身份和 Agent 路由安全边界   | T1             | -   |
-| T3  | 重写 Agent 房间解析、规则修改和取消预约编排          | T1, T2         | -   |
-| T4  | 强化 LLM 时间上下文、Schema 严格校验和响应运行时校验 | T3             | -   |
-| T5  | 补齐 P0/P1 测试、真实 SQLite 场景和 opt-in Nex smoke | T1, T2, T3, T4 | -   |
-| T6  | 更新最小运行说明和验收门禁                           | T5             | -   |
+| T1  | 修复启动基线与 RFC-0001 API 适配                     | -              | `d80ec5f` |
+| T2  | 实现服务端会话历史、Demo 身份和 Agent 路由安全边界   | T1             | `d80ec5f` |
+| T3  | 重写 Agent 房间解析、规则修改和取消预约编排          | T1, T2         | `d80ec5f` |
+| T4  | 强化 LLM 时间上下文、Schema 严格校验和响应运行时校验 | T3             | `d80ec5f` |
+| T5  | 补齐 P0/P1 测试、真实 SQLite 场景和 opt-in Nex smoke | T1, T2, T3, T4 | `d80ec5f` |
+| T6  | 更新最小运行说明和验收门禁                           | T5             | `d80ec5f` |
 
 > **并行提示**：T1 完成后，T2 与 T4 的 schema/响应校验设计可并行准备；T3 依赖 T2 的历史解析能力。T5 需要等待核心行为稳定后统一收口。
 

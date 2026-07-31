@@ -1,4 +1,4 @@
-# RFC-0003: 会务系统端到端测试 RFC
+# RFC-0005: 会务系统端到端测试 RFC
 
 ## 摘要
 
@@ -321,8 +321,8 @@ graph TD
 范围：创建并维护 RFC 文档、metadata、索引与评审流程。  
 验收标准：
 
-- `docs/rfcs/0003-meeting-e2e-test-rfc.md` 存在；
-- `docs/rfcs/meta/0003-meeting-e2e-test-rfc.json` 由 `ncoder rfc` CLI 创建；
+- `docs/rfcs/0005-meeting-e2e-test-rfc.md` 存在；
+- `docs/rfcs/meta/0005-meeting-e2e-test-rfc.json` 由 `ncoder rfc` CLI 创建；
 - `docs/rfcs/README.md` 索引包含本 RFC；
 - 评审人可理解测试策略、用例范围、风险与执行节奏。
 
@@ -330,8 +330,8 @@ graph TD
 
 - `TEST_PLAN.md`：测试计划主文档；
 - `tests/`：机器可读测试用例、pytest 执行骨架与 adapter；
-- `docs/rfcs/0003-meeting-e2e-test-rfc.md`：RFC 设计文档；
-- `docs/rfcs/meta/0003-meeting-e2e-test-rfc.json`：RFC metadata 与任务状态；
+- `docs/rfcs/0005-meeting-e2e-test-rfc.md`：RFC 设计文档；
+- `docs/rfcs/meta/0005-meeting-e2e-test-rfc.json`：RFC metadata 与任务状态；
 - `docs/rfcs/README.md`：RFC 索引。
 
 ## 测试方案

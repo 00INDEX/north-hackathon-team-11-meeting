@@ -19,10 +19,11 @@
 
 | RFC                                                   | 标题                          | 状态         | 优先级 |
 | ----------------------------------------------------- | ----------------------------- | ------------ | ------ |
-| [RFC-0001](./0001-local-meeting-room-system.md)       | 本地会议室查询与预订系统      | implementing | P0     |
-| [RFC-0002](./0002-meeting-room-agent-orchestrator.md) | 会议室预约系统 Agent 编排设计 | draft        | P1     |
-| [RFC-0003](./0003-agent-real-usage-fixes.md)          | Agent 真实可用修复计划        | draft        | P1     |
-| [RFC-0004](./0004-agent-frontend-integration.md)      | Agent 与前端联调闭环设计      | draft        | P1     |
+| [RFC-0001](./0001-local-meeting-room-system.md)       | 本地会议室查询与预订系统      | implemented  | P0     |
+| [RFC-0002](./0002-meeting-room-agent-orchestrator.md) | 会议室预约系统 Agent 编排设计 | implemented  | P1     |
+| [RFC-0003](./0003-agent-real-usage-fixes.md)          | Agent 真实可用修复计划        | implemented  | P1     |
+| [RFC-0004](./0004-agent-frontend-integration.md)      | Agent 与前端联调闭环设计      | implemented  | P1     |
+| [RFC-0005](./0005-meeting-e2e-test-rfc.md)            | 会务系统端到端测试 RFC        | draft        | P1     |
 
 ## RFC 编号规则
 

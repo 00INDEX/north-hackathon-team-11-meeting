@@ -3,51 +3,73 @@
   "created": "2026-07-31",
   "priority": "P1",
   "related": [],
-  "requires": ["0001", "0002", "0003"],
+  "requires": [
+    "0001",
+    "0002",
+    "0003"
+  ],
   "rfc": "0004",
-  "status": "draft",
-  "tags": ["agent", "meeting-room", "typescript", "ui", "nex"],
+  "status": "implemented",
+  "tags": [
+    "agent",
+    "meeting-room",
+    "typescript",
+    "ui",
+    "nex"
+  ],
   "tasks": [
     {
       "depends_on": [],
       "id": "T1",
-      "ref": null,
-      "status": "pending",
+      "ref": "d80ec5f",
+      "status": "implemented",
       "title": "权威后端 API 适配与旧业务 facade 废弃边界"
     },
     {
-      "depends_on": ["T1"],
+      "depends_on": [
+        "T1"
+      ],
       "id": "T2",
-      "ref": null,
-      "status": "pending",
+      "ref": "d80ec5f",
+      "status": "implemented",
       "title": "服务端会话历史与 Demo 身份注入"
     },
     {
-      "depends_on": ["T1", "T2"],
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
       "id": "T3",
-      "ref": null,
-      "status": "pending",
+      "ref": "d80ec5f",
+      "status": "implemented",
       "title": "真实 Nex 联调配置、默认调用与运行门禁"
     },
     {
-      "depends_on": ["T2", "T3"],
+      "depends_on": [
+        "T2",
+        "T3"
+      ],
       "id": "T4",
-      "ref": null,
-      "status": "pending",
+      "ref": "d80ec5f",
+      "status": "implemented",
       "title": "现有页面新增 Agent 聊天面板"
     },
     {
-      "depends_on": ["T4"],
+      "depends_on": [
+        "T4"
+      ],
       "id": "T5",
-      "ref": null,
-      "status": "pending",
+      "ref": "d80ec5f",
+      "status": "implemented",
       "title": "查询、预约、取消、规则管理端到端验收"
     },
     {
-      "depends_on": ["T5"],
+      "depends_on": [
+        "T5"
+      ],
       "id": "T6",
-      "ref": null,
-      "status": "pending",
+      "ref": "d80ec5f",
+      "status": "implemented",
       "title": "文档、兼容说明与 RFC 状态收尾"
     }
   ],
