@@ -13,5 +13,9 @@ data/
 *.sqlite3-wal
 *.sqlite3-shm
 
+# Local secrets and noisy logs
+.env
+*.log
+
 # Local lock used by the RFC metadata state machine.
 docs/rfcs/meta/.rfc.lock

@@ -1,0 +1,74 @@
+{
+  "affects": "src/agent, src/api, tests, .env.example",
+  "created": "2026-07-31",
+  "priority": "P1",
+  "related": [
+    "0001"
+  ],
+  "requires": [],
+  "rfc": "0002",
+  "status": "draft",
+  "tags": [
+    "agent",
+    "meeting-room",
+    "typescript"
+  ],
+  "tasks": [
+    {
+      "depends_on": [],
+      "id": "T1",
+      "ref": null,
+      "status": "pending",
+      "title": "定义 AgentIntent 与 JSON Schema"
+    },
+    {
+      "depends_on": [
+        "T1"
+      ],
+      "id": "T2",
+      "ref": null,
+      "status": "pending",
+      "title": "实现 Nex LLM Parser"
+    },
+    {
+      "depends_on": [
+        "T1"
+      ],
+      "id": "T3",
+      "ref": null,
+      "status": "pending",
+      "title": "实现时间归一化与历史上下文输入"
+    },
+    {
+      "depends_on": [
+        "T2",
+        "T3"
+      ],
+      "id": "T4",
+      "ref": null,
+      "status": "pending",
+      "title": "实现 Agent Orchestrator"
+    },
+    {
+      "depends_on": [
+        "T4"
+      ],
+      "id": "T5",
+      "ref": null,
+      "status": "pending",
+      "title": "实现响应格式与错误处理"
+    },
+    {
+      "depends_on": [
+        "T4",
+        "T5"
+      ],
+      "id": "T6",
+      "ref": null,
+      "status": "pending",
+      "title": "完成场景测试与验收"
+    }
+  ],
+  "title": "会议室预约系统 Agent 编排设计",
+  "updated": "2026-07-31"
+}
