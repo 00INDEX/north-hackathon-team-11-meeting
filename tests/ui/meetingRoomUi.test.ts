@@ -106,6 +106,9 @@ describe("RFC-0001 T5 meeting room UI", () => {
     expect(html).toContain("Agent 服务返回了无法识别的响应");
     expect(html).toContain("'Agent 请求失败（HTTP ' + response.status");
     expect(html).toContain("无法连接 Agent 服务");
+    expect(html).toContain("{ agentResponse: body }");
+    expect(html).toContain("agentResponse?.parsedIntent");
+    expect(html).toContain("agentResponse?.actions");
   });
 
   it("refreshes authoritative views after a successful Agent mutation and remains responsive", () => {

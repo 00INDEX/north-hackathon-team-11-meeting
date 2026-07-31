@@ -687,7 +687,10 @@ export function renderMeetingRoomApp(): string {
         }
         if (!response.ok) {
           const detail = body.error?.message ?? body.reply ?? response.statusText ?? '请求失败';
-          throw new Error('Agent 请求失败（HTTP ' + response.status + '）：' + detail);
+          throw Object.assign(
+            new Error('Agent 请求失败（HTTP ' + response.status + '）：' + detail),
+            { agentResponse: body },
+          );
         }
         if (typeof body.reply !== 'string' || body.reply.trim() === '') {
           throw new Error('Agent 服务没有返回可展示的回复，请稍后重试。');
@@ -809,7 +812,13 @@ export function renderMeetingRoomApp(): string {
         } catch (error) {
           $('#agent-loading')?.remove();
           const message = error instanceof Error ? error.message : 'Agent 请求失败，请稍后重试。';
-          appendAgentMessage('assistant', message, { isError: true, error: { message } });
+          const agentResponse = error && typeof error === 'object' ? error.agentResponse : undefined;
+          appendAgentMessage('assistant', agentResponse?.reply ?? message, {
+            parsedIntent: agentResponse?.parsedIntent,
+            actions: agentResponse?.actions,
+            isError: true,
+            error: agentResponse?.error ?? { message },
+          });
           setAgentStatus(message, true);
         } finally {
           setAgentLoading(false);
